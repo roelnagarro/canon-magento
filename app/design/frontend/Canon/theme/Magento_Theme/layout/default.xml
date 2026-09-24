@@ -10,8 +10,8 @@
         <referenceContainer name="header.panel" remove="true"/>
         <referenceContainer name="navigation.sections" remove="true"/>
         <referenceContainer name="footer" remove="true"/>
+        <referenceBlock name="copyright" remove="true"/>
         <referenceBlock name="report.bugs" remove="true"/>
-
         <referenceContainer name="page.wrapper">
             <block class="Magento\Framework\View\Element\Template" name="toyota.header" template="Magento_Theme::html/header.phtml" before="-"/>
             <block class="Magento\Framework\View\Element\Template" name="toyota.footer" template="Magento_Theme::html/footer.phtml" after="-"/>
