@@ -1,0 +1,14 @@
+{
+    "name": "canon/theme-frontend",
+    "description": "Canon Custom Magento 2 Theme",
+    "type": "magento2-theme",
+    "license": "proprietary",
+    "require": {
+        "magento/theme-frontend-luma": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ]
+    }
+}

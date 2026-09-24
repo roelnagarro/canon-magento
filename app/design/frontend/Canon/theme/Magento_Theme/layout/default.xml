@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Rent a Toyota Brand Store - Default Layout
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="header-wrapper" remove="true"/>
+        <referenceContainer name="header.panel" remove="true"/>
+        <referenceContainer name="navigation.sections" remove="true"/>
+        <referenceContainer name="footer" remove="true"/>
+        <referenceBlock name="report.bugs" remove="true"/>
+
+        <referenceContainer name="page.wrapper">
+            <block class="Magento\Framework\View\Element\Template" name="toyota.header" template="Magento_Theme::html/header.phtml" before="-"/>
+            <block class="Magento\Framework\View\Element\Template" name="toyota.footer" template="Magento_Theme::html/footer.phtml" after="-"/>
+        </referenceContainer>
+    </body>
+</page>

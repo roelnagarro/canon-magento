@@ -1,0 +1,26 @@
+<?php
+/**
+ * Rent a Toyota Brand Store - Homepage Template
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+<div class="toyota-home-page">
+    <div class="hero-section">
+        <h1 class="hero-title">
+            Welcome to <span class="highlight-red">Rent a Toyota</span> Brand Store.
+        </h1>
+        <p class="hero-description">
+            Access approved branded merchandise, dealership materials, and program resources designed to help elevate every customer interaction.
+        </p>
+
+        <div class="hero-image-container">
+            <img src="<?= $block->getViewFileUrl('images/hero-manager.png') ?>" alt="Rent a Toyota Manager" class="hero-main-image" />
+        </div>
+    </div>
+
+    <div class="dots-pattern-bg"></div>
+
+    <div class="vehicle-banner-section">
+        <img src="<?= $block->getViewFileUrl('images/banner-vehicles.png') ?>" alt="Toyota Vehicles Banner" class="banner-image" />
+    </div>
+</div>

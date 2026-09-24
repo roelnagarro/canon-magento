@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Rent a Toyota Brand Store - Homepage Layout
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="page.main.title" remove="true"/>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="toyota.homepage" template="Magento_Cms::home.phtml" before="-"/>
+        </referenceContainer>
+    </body>
+</page>
