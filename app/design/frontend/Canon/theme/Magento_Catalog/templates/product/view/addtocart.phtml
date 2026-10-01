@@ -1,0 +1,90 @@
+<?php
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Add To Cart'); ?>
+<?php if ($_product->isSaleable()) :?>
+<div class="box-tocart">
+    <div class="fieldset">
+        <div class="product-options-wrapper custom-size-swatches">
+            <div class="swatch-attribute size">
+                <span class="swatch-attribute-label"><?= $block->escapeHtml(__('Available Sizes')) ?></span>
+                <div class="swatch-attribute-options clearfix">
+                    <div class="swatch-option text disabled" data-size="Small"><?= $block->escapeHtml(__('Small')) ?></div>
+                    <div class="swatch-option text" data-size="Medium"><?= $block->escapeHtml(__('Medium')) ?></div>
+                    <div class="swatch-option text" data-size="Large"><?= $block->escapeHtml(__('Large')) ?></div>
+                    <div class="swatch-option text selected" data-size="XLarge"><?= $block->escapeHtml(__('XLarge')) ?></div>
+                    <div class="swatch-option text" data-size="2XLarge"><?= $block->escapeHtml(__('2XLarge')) ?></div>
+                    <div class="swatch-option text" data-size="3XLarge"><?= $block->escapeHtml(__('3XLarge')) ?></div>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($block->shouldRenderQuantity()) :?>
+        <div class="field qty">
+            <label class="label" for="qty"><span><?= $block->escapeHtml(__('Quantity')) ?></span></label>
+            <div class="control qty-stepper">
+                <button type="button" class="qty-btn qty-minus" id="qty-minus" aria-label="Decrease quantity">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <input type="number"
+                       name="qty"
+                       id="qty"
+                       min="1"
+                       value="<?= $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                       class="input-text qty"
+                       data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
+                       />
+                <button type="button" class="qty-btn qty-plus" id="qty-plus" aria-label="Increase quantity">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <div class="actions">
+            <button type="submit"
+                    title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button">
+                <span><?= $block->escapeHtml($buttonTitle) ?></span>
+            </button>
+            <?= $block->getChildHtml('', true) ?>
+        </div>
+    </div>
+</div>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+</script>
+<script>
+require(['jquery'], function($) {
+    $(document).ready(function() {
+        $(document).on('click', '#qty-minus', function(e) {
+            e.preventDefault();
+            var $qty = $('#qty');
+            var val = parseInt($qty.val()) || 1;
+            if (val > 1) {
+                $qty.val(val - 1).trigger('change');
+            }
+        });
+        $(document).on('click', '#qty-plus', function(e) {
+            e.preventDefault();
+            var $qty = $('#qty');
+            var val = parseInt($qty.val()) || 1;
+            $qty.val(val + 1).trigger('change');
+        });
+
+        $(document).on('click', '.custom-size-swatches .swatch-option.text:not(.disabled)', function(e) {
+            e.preventDefault();
+            $('.custom-size-swatches .swatch-option.text').removeClass('selected');
+            $(this).addClass('selected');
+        });
+    });
+});
+</script>
+<?php endif; ?>

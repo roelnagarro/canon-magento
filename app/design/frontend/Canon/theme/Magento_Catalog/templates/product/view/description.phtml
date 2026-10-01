@@ -1,0 +1,14 @@
+<?php
+/** @var $block \Magento\Catalog\Block\Product\View\Description */
+$_product = $block->getProduct();
+$description = ($_product && $_product->getDescription()) ? $_product->getDescription() : '';
+if (empty($description)) {
+    $description = __('Clean lines, classic fit, dependable comfort-this anti-static polo blends moisture-wicking performance with upscale branded detailing under the three-button placket. 100% polyester. Woven fabric Toyota bug and stripes on interior placket. Black.');
+}
+?>
+<div class="product-custom-description-section">
+    <h3 class="description-title"><?= $block->escapeHtml(__('Description')) ?></h3>
+    <div class="description-content">
+        <?= /* @noEscape */ $description ?>
+    </div>
+</div>

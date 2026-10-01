@@ -1,0 +1,10 @@
+<?php
+/** @var $block \Magento\Catalog\Block\Product\View\Description */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php if ($_product && $_product->getSku()) : ?>
+    <div class="product attribute sku">
+        <span class="type"><?= $block->escapeHtml(__('Product ID:')) ?></span>
+        <span class="value" itemprop="sku"><?= $block->escapeHtml($_product->getSku()) ?></span>
+    </div>
+<?php endif; ?>

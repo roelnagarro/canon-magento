@@ -9,6 +9,17 @@
     <body>
         <move element="page.main.title" destination="product.info.main" before="-"/>
         <move element="product.info.stock.sku" destination="product.info.price" after="product.price.final"/>
-        <move element="product.info.review" destination="product.info.main" before="product.info.price"/>
+        
+        <!-- Hide review summary & detailed tabs -->
+        <referenceBlock name="product.info.review" remove="true"/>
+        <referenceBlock name="product.info.details" remove="true"/>
+
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="product.info.back" template="Magento_Catalog::product/view/back.phtml" before="-"/>
+            <block class="Magento\Framework\View\Element\Template" name="product.info.custom.description" template="Magento_Catalog::product/view/description.phtml" after="product.info.main"/>
+        </referenceContainer>
+
+        <referenceBlock name="product.info.sku" template="Magento_Catalog::product/view/sku.phtml"/>
+        <referenceBlock name="product.info.addtocart" template="Magento_Catalog::product/view/addtocart.phtml"/>
     </body>
 </page>
