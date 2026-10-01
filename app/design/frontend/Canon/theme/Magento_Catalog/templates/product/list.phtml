@@ -1,0 +1,124 @@
+<?php
+/**
+ * Product list template - Custom Toyota Brand Store PLP Layout
+ *
+ * @var $block \Magento\Catalog\Block\Product\ListProduct
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ */
+use Magento\Framework\App\Action\Action;
+
+$_productCollection = $block->getLoadedProductCollection();
+$_helper = $block->getData('outputHelper');
+?>
+<?php if ($block->getData('has_error') || !$_productCollection->count()): ?>
+    <div class="message info empty">
+        <div><?= $escaper->escapeHtml(__('We can\'t find products matching the selection.')) ?></div>
+    </div>
+<?php else: ?>
+    <div class="plp-top-toolbar-container">
+        <?= $block->getToolbarHtml() ?>
+    </div>
+    <?= $block->getAdditionalHtml() ?>
+    <?php
+    $viewMode = 'grid';
+    $imageDisplayArea = 'category_page_grid';
+    $showDescription = false;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    $pos = $block->getPositioned();
+    ?>
+    <div class="products wrapper <?= /* @noEscape */ $viewMode ?> products-<?= /* @noEscape */ $viewMode ?> plp-custom-layout">
+        <ol class="products list items product-items plp-grid">
+            <?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
+            <?php foreach ($_productCollection as $_product): ?>
+            <li class="item product product-item">
+                <div class="product-item-info"
+                     id="product-item-info_<?= /* @noEscape */ $_product->getId() ?>"
+                     data-container="product-grid">
+                    <?php
+                    $productImage = $block->getImage($_product, $imageDisplayArea);
+                    ?>
+                    
+                    <!-- Product Image Container -->
+                    <div class="product-item-image-wrapper">
+                        <a href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>"
+                           class="product photo product-item-photo"
+                           tabindex="-1">
+                            <?= $productImage->toHtml() ?>
+                        </a>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="product details product-item-details">
+                        <?php $_productNameStripped = $block->stripTags($_product->getName(), null, true); ?>
+                        <strong class="product name product-item-name">
+                            <a class="product-item-link"
+                               href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>">
+                                <?= /* @noEscape */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
+                            </a>
+                        </strong>
+
+                        <div class="price-box price-final_price">
+                            <?= /* @noEscape */ $block->getProductPrice($_product) ?>
+                        </div>
+
+                        <!-- Stock Status Indicator -->
+                        <div class="product-stock-status">
+                            <?php if ($_product->isAvailable()): ?>
+                                <span class="stock available">
+                                    <span class="stock-dot green-dot"></span>
+                                    <span><?= $escaper->escapeHtml(__('In Stock')) ?></span>
+                                </span>
+                            <?php else: ?>
+                                <span class="stock unavailable">
+                                    <span class="stock-dot grey-dot"></span>
+                                    <span><?= $escaper->escapeHtml(__('Out of Stock')) ?></span>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Add To Cart Form -->
+                        <div class="product-item-inner-actions">
+                            <div class="product actions product-item-actions">
+                                <div class="actions-primary">
+                                    <?php if ($_product->isSaleable()): ?>
+                                        <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                        <form data-role="tocart-form"
+                                              data-product-sku="<?= $escaper->escapeHtml($_product->getSku()) ?>"
+                                              action="<?= $escaper->escapeUrl($postParams['action']) ?>"
+                                              data-mage-init='{"catalogAddToCart": {}}'
+                                              method="post">
+                                            <?php $options = $block->getData('viewModel') ? $block->getData('viewModel')->getOptionsData($_product) : []; ?>
+                                            <?php foreach ($options as $optionItem): ?>
+                                                <input type="hidden"
+                                                       name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
+                                                       value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
+                                            <?php endforeach; ?>
+                                            <input type="hidden"
+                                                   name="product"
+                                                   value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
+                                            <input type="hidden"
+                                                   name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>"
+                                                   value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                            <?= $block->getBlockHtml('formkey') ?>
+                                            <button type="submit"
+                                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                                    class="action tocart primary">
+                                                <span><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+            <?php endforeach; ?>
+        </ol>
+    </div>
+    <div class="plp-bottom-toolbar-container">
+        <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
+    </div>
+<?php endif; ?>

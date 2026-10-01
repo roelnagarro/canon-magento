@@ -1,0 +1,36 @@
+<?php
+/**
+ * Product list toolbar amount template
+ *
+ * @var \Magento\Catalog\Block\Product\ProductList\Toolbar $block
+ */
+?>
+<p class="toolbar-amount plp-results-count" id="toolbar-amount">
+    <?php if ($block->getLastPageNum() > 1): ?>
+        <?= $block->escapeHtml(
+            __(
+                'Showing %1-%2 of %3 results',
+                '<span class="toolbar-number">' . $block->getFirstNum() . '</span>',
+                '<span class="toolbar-number">' . $block->getLastNum() . '</span>',
+                '<span class="toolbar-number">' . $block->getTotalNum() . '</span>'
+            ),
+            ['span']
+        ) ?>
+    <?php elseif ($block->getTotalNum() == 1): ?>
+        <?= $block->escapeHtml(
+            __(
+                'Showing 1 result',
+                '<span class="toolbar-number">1</span>'
+            ),
+            ['span']
+        ) ?>
+    <?php else: ?>
+        <?= $block->escapeHtml(
+            __(
+                'Showing %1 results',
+                '<span class="toolbar-number">' . $block->getTotalNum() . '</span>'
+            ),
+            ['span']
+        ) ?>
+    <?php endif; ?>
+</p>

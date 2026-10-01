@@ -14,6 +14,17 @@ $categories = $categoryFactory->create()
 
 $currentUrl = $block->getUrl('*/*/*', ['_current' => true]);
 $actionName = $block->getRequest()->getFullActionName();
+
+$customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
+$httpContext = $objectManager->get(\Magento\Framework\App\Http\Context::class);
+$isLoggedIn = (bool)$httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH) || $customerSession->isLoggedIn();
+$profileUrl = $isLoggedIn ? $block->getUrl('customer/account') : $block->getUrl('customer/account/login');
+$customerName = ($isLoggedIn && $customerSession->isLoggedIn() && $customerSession->getCustomer())
+    ? $customerSession->getCustomer()->getName()
+    : 'Scot Francis';
+if (empty(trim((string)$customerName))) {
+    $customerName = 'Scot Francis';
+}
 ?>
 <header class="toyota-header">
     <div class="toyota-header-top">
@@ -32,7 +43,7 @@ $actionName = $block->getRequest()->getFullActionName();
             </div>
         </div>
 
-        <div class="toyota-user-profile">
+        <a href="<?= $block->escapeUrl($profileUrl) ?>" class="toyota-user-profile" title="<?= $isLoggedIn ? __('User Profile') : __('Sign In') ?>">
             <div class="user-avatar">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="#6b7280">
                     <path
@@ -40,15 +51,21 @@ $actionName = $block->getRequest()->getFullActionName();
                 </svg>
             </div>
             <div class="user-info">
-                <div class="user-name">
-                    Scot Francis
-                    <svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151">
-                        <path d="M7 10l5 5 5-5z" />
-                    </svg>
-                </div>
-                <div class="user-store">Right Toyota</div>
+                <?php if ($isLoggedIn): ?>
+                    <div class="user-name">
+                        <?= $block->escapeHtml($customerName) ?>
+                        <svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151">
+                            <path d="M7 10l5 5 5-5z" />
+                        </svg>
+                    </div>
+                    <div class="user-store">Right Toyota</div>
+                <?php else: ?>
+                    <div class="user-name">
+                        Sign In
+                    </div>
+                <?php endif; ?>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="toyota-search-bar-container">
@@ -62,12 +79,22 @@ $actionName = $block->getRequest()->getFullActionName();
 
         <div class="filter-pills-group">
             <a href="<?= $block->getUrl('catalogsearch/result/', ['_query' => ['q' => '']]) ?>"
-                class="pill-btn <?= ($actionName === 'cms_index_index' || $actionName === 'catalogsearch_result_index') ? 'pill-btn-active' : '' ?>">
+                class="pill-btn <?= ($actionName === 'cms_index_index' || ($actionName === 'catalogsearch_result_index' && empty($block->getRequest()->getParam('q')))) ? 'pill-btn-active' : '' ?>">
                 Show All
             </a>
             <?php foreach ($categories as $category): ?>
-                <a href="<?= $category->getUrl() ?>"
-                    class="pill-btn <?= (strpos($currentUrl, (string) $category->getUrlKey()) !== false) ? 'pill-btn-active' : '' ?>">
+                <?php
+                    $urlKey = (string)$category->getUrlKey();
+                    $catId = (string)$category->getId();
+                    $isCatActive = ($actionName === 'catalog_category_view') && (
+                        (strpos($currentUrl, $urlKey) !== false)
+                        || (strpos($currentUrl, 'id/' . $catId) !== false)
+                        || ($block->getRequest()->getParam('id') == $catId)
+                    );
+                    $catUrl = $block->getUrl('catalog/category/view', ['s' => $urlKey, 'id' => $catId]);
+                ?>
+                <a href="<?= $escaper->escapeUrl($catUrl) ?>"
+                    class="pill-btn <?= $isCatActive ? 'pill-btn-active' : '' ?>">
                     <?= $block->escapeHtml($category->getName()) ?>
                 </a>
             <?php endforeach; ?>

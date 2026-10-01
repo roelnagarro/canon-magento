@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\CatalogSearch\Controller\Result\Index">
+        <plugin name="canon_catalogsearch_result_index" type="Canon\CatalogSearch\Plugin\Controller\Result\IndexPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\CatalogSearch\Helper\Data">
+        <plugin name="canon_catalogsearch_helper_data" type="Canon\CatalogSearch\Plugin\Helper\DataPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\CatalogSearch\Block\Result">
+        <plugin name="canon_catalogsearch_block_result" type="Canon\CatalogSearch\Plugin\Block\ResultPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection">
+        <plugin name="canon_catalogsearch_fulltext_collection" type="Canon\CatalogSearch\Plugin\Model\ResourceModel\Fulltext\CollectionPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection\SearchResultApplierInterface">
+        <plugin name="canon_catalogsearch_search_result_applier_interface" type="Canon\CatalogSearch\Plugin\Model\ResourceModel\Fulltext\Collection\SearchResultApplierPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\Elasticsearch\Model\ResourceModel\Fulltext\Collection\SearchResultApplier">
+        <plugin name="canon_catalogsearch_search_result_applier_es" type="Canon\CatalogSearch\Plugin\Model\ResourceModel\Fulltext\Collection\SearchResultApplierPlugin" sortOrder="10"/>
+    </type>
+</config>

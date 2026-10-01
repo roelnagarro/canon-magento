@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Customer Account Login Layout Override
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Customer Login</title>
+    </head>
+    <body>
+        <attribute name="class" value="customer-account-login-page"/>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="breadcrumbs" remove="true"/>
+        <referenceBlock name="customer.new" remove="true"/>
+        <referenceBlock name="customer_form_login" template="Magento_Customer::form/login.phtml"/>
+    </body>
+</page>
