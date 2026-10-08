@@ -1,0 +1,112 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart\Item\Renderer */
+$_item = $block->getItem();
+$product = $_item->getProduct();
+$isVisibleProduct = $product->isVisibleInSiteVisibility();
+
+$imagePath = $product ? ($product->getImage() ?: $product->getThumbnail() ?: $product->getSmallImage()) : '';
+if ($imagePath && $imagePath !== 'no_selection') {
+    $imgUrl = '/media/catalog/product/' . ltrim($imagePath, '/');
+} else {
+    $imgUrl = '/media/catalog/product/o/g/ogio_polo.png';
+}
+?>
+<div class="cart-item-card" style="background: #ffffff !important; border: 1px solid #e5e7eb !important; border-radius: 14px !important; padding: 20px 24px !important; margin-bottom: 0px !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; gap: 24px !important; box-sizing: border-box !important; width: 100% !important;">
+    <div class="cart-item-image-wrapper" style="width: 120px !important; height: 120px !important; min-width: 120px !important; min-height: 120px !important; background-color: #f4f4f5 !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; padding: 10px !important; box-sizing: border-box !important;">
+        <?php if ($block->hasProductUrl()) : ?>
+            <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>" title="<?= $block->escapeHtmlAttr($block->getProductName()) ?>" class="product-item-photo" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; height: 100% !important;">
+        <?php else : ?>
+            <span class="product-item-photo" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; height: 100% !important;">
+        <?php endif; ?>
+        <img src="<?= $block->escapeUrl($imgUrl) ?>" alt="<?= $block->escapeHtmlAttr($block->getProductName()) ?>" style="max-height: 96px !important; max-width: 96px !important; object-fit: contain !important; mix-blend-mode: multiply !important; display: block !important;" />
+        <?php if ($block->hasProductUrl()) : ?>
+            </a>
+        <?php else : ?>
+            </span>
+        <?php endif; ?>
+    </div>
+
+    <div class="cart-item-details" style="flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 6px !important; justify-content: center !important;">
+        <h3 class="product-name" style="font-size: 16px !important; font-weight: 700 !important; color: #111827 !important; text-transform: uppercase !important; margin: 0 !important; font-family: inherit !important;">
+            <?php if ($block->hasProductUrl()) : ?>
+                <a href="<?= $block->escapeUrl($block->getProductUrl()) ?>" style="color: inherit !important; text-decoration: none !important;"><?= $block->escapeHtml($block->getProductName()) ?></a>
+            <?php else : ?>
+                <?= $block->escapeHtml($block->getProductName()) ?>
+            <?php endif; ?>
+        </h3>
+
+        <?php if ($_item->getSku()) : ?>
+            <div class="product-sku" style="font-size: 13px !important; color: #71717a !important; margin: 0 !important;">
+                <span>Product ID: <?= $block->escapeHtml($_item->getSku()) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <div class="product-attribute-pills" style="display: flex !important; flex-direction: row !important; gap: 8px !important; margin: 4px 0 !important; align-items: center !important;">
+            <span class="pill" style="background-color: #eef0f2 !important; color: #52525b !important; border-radius: 12px !important; padding: 4px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;"><?= $block->escapeHtml(__('QTY:')) ?> <?= (int)$_item->getQty() ?></span>
+            <?php if ($options = $block->getOptionList()) : ?>
+                <?php foreach ($options as $option) : ?>
+                    <span class="pill" style="background-color: #eef0f2 !important; color: #52525b !important; border-radius: 12px !important; padding: 4px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;"><?= $block->escapeHtml(is_array($option['value']) ? implode(', ', $option['value']) : $option['value']) ?></span>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="product-price-wrapper" style="margin: 2px 0 !important;">
+            <span class="price" style="font-size: 22px !important; font-weight: 800 !important; color: #111827 !important;">
+                <?= $block->getUnitPriceHtml($_item) ?>
+            </span>
+        </div>
+
+        <div class="product-stock-status">
+            <?php if ($product && $product->isAvailable()) : ?>
+                <span class="stock-indicator in-stock" style="font-size: 13px !important; color: #16a34a !important; font-weight: 500 !important; display: inline-flex !important; align-items: center !important; gap: 6px !important;">
+                    <span class="stock-dot" style="width: 7px !important; height: 7px !important; background-color: #22c55e !important; border-radius: 50% !important; display: inline-block !important;"></span>
+                    <?= $block->escapeHtml(__('In Stock')) ?>
+                </span>
+            <?php else : ?>
+                <span class="stock-indicator out-of-stock" style="font-size: 13px !important; color: #9ca3af !important; font-weight: 500 !important; display: inline-flex !important; align-items: center !important; gap: 6px !important;">
+                    <span class="stock-dot" style="width: 7px !important; height: 7px !important; background-color: #a1a1aa !important; border-radius: 50% !important; display: inline-block !important;"></span>
+                    <?= $block->escapeHtml(__('Out of Stock')) ?>
+                </span>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="cart-item-actions" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 20px !important; flex-shrink: 0 !important; margin-left: auto !important; width: auto !important;">
+        <div class="field qty" style="margin: 0 !important; display: inline-block !important; width: auto !important;">
+            <div class="control qty-stepper" style="display: inline-flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; border: 1px solid #d4d4d8 !important; border-radius: 20px !important; padding: 2px 6px !important; background: #ffffff !important; height: 36px !important; box-sizing: border-box !important; width: auto !important;">
+                <button type="button" class="qty-btn cart-qty-minus" data-cart-item-id="<?= $_item->getId() ?>" aria-label="Decrease quantity" style="width: 26px !important; height: 26px !important; min-width: 26px !important; border-radius: 50% !important; border: 1px solid #a1a1aa !important; background: #ffffff !important; color: #3f3f46 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <input id="cart-<?= $block->escapeHtmlAttr($_item->getId()) ?>-qty"
+                       name="cart[<?= $block->escapeHtmlAttr($_item->getId()) ?>][qty]"
+                       data-cart-item-id="<?= $block->escapeHtmlAttr($_item->getSku()) ?>"
+                       value="<?= $block->getQty() ?>"
+                       type="number"
+                       min="1"
+                       size="4"
+                       step="any"
+                       title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                       class="input-text qty"
+                       style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 28px !important; border: none !important; background: transparent !important; text-align: center !important; font-size: 14px !important; font-weight: 700 !important; color: #18181b !important; padding: 0 !important; margin: 0 4px !important; box-shadow: none !important; outline: none !important; display: inline-block !important;"
+                       data-validate="{required:true,'validate-greater-than-zero':true}"
+                       data-item-qty="<?= $block->getQty() ?>"/>
+                <button type="button" class="qty-btn cart-qty-plus" data-cart-item-id="<?= $_item->getId() ?>" aria-label="Increase quantity" style="width: 26px !important; height: 26px !important; min-width: 26px !important; border-radius: 50% !important; border: 1px solid #a1a1aa !important; background: #ffffff !important; color: #3f3f46 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="action-delete-wrapper" style="display: inline-flex !important; align-items: center !important; width: auto !important;">
+            <a href="#"
+               title="<?= $block->escapeHtmlAttr(__('Remove item')) ?>"
+               class="action action-delete"
+               style="width: 32px !important; height: 32px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; cursor: pointer !important; color: #9ca3af !important; box-shadow: none !important;"
+               data-post='<?= /* @noEscape */ $this->helper(Magento\Checkout\Helper\Cart::class)->getDeletePostJson($_item) ?>'>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>

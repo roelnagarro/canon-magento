@@ -3,21 +3,48 @@
  * Rent a Toyota Brand Store - Homepage Template
  * @var \Magento\Framework\View\Element\Template $block
  */
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+/** @var \Magento\Cms\Model\Template\FilterProvider $filterProvider */
+$filterProvider = $objectManager->get(\Magento\Cms\Model\Template\FilterProvider::class);
+
+$cmsPageContent = '';
+try {
+    /** @var \Magento\Cms\Model\Page $cmsPage */
+    $cmsPage = $objectManager->get(\Magento\Cms\Model\Page::class);
+    $pageId = $block->getRequest()->getParam('page_id', $block->getRequest()->getParam('id'));
+    if ($pageId) {
+        $cmsPage->load($pageId);
+    } else {
+        $cmsPage->load('home', 'identifier');
+    }
+    if ($cmsPage->getId() && !empty(trim($cmsPage->getContent()))) {
+        $cmsPageContent = $filterProvider->getPageFilter()->filter($cmsPage->getContent());
+    }
+} catch (\Exception $e) {
+    $cmsPageContent = '';
+}
+
+$heroCmsBlockHtml = '';
+try {
+    $blockModel = $objectManager->create(\Magento\Cms\Block\Block::class)->setBlockId('home-hero-section');
+    if ($blockModel) {
+        $blockHtml = $blockModel->toHtml();
+        if (!empty(trim($blockHtml))) {
+            $heroCmsBlockHtml = $blockHtml;
+        }
+    }
+} catch (\Exception $e) {
+    $heroCmsBlockHtml = '';
+}
 ?>
 <div class="toyota-home-page">
     <div class="hero-section">
-        <h1 class="hero-title">
-            Welcome to <span class="highlight-red">Rent a Toyota</span> Brand Store.
-        </h1>
-        <p class="hero-description">
-            Access approved branded merchandise, dealership materials, and program resources designed to help elevate
-            every customer interaction.
-        </p>
-
-        <div class="hero-image-container">
-            <img src="<?= $block->getViewFileUrl('images/hero-home.png') ?>" alt="Rent a Toyota Manager"
-                class="hero-main-image" />
-        </div>
+        <?php if (!empty(trim($heroCmsBlockHtml))): ?>
+            <?= /* @noEscape */ $heroCmsBlockHtml ?>
+        <?php else: ?>
+            <?= /* @noEscape */ $cmsPageContent ?>
+        <?php endif; ?>
     </div>
 
     <div class="dots-pattern-bg"></div>

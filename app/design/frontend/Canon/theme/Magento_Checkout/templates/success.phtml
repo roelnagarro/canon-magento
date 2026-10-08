@@ -1,0 +1,205 @@
+<?php
+/**
+ * Custom Order Success Page Template
+ * @var $block \Magento\Checkout\Block\Onepage\Success
+ */
+?>
+<div class="checkout-success-container">
+    <div class="checkout-success-card">
+        <!-- Success Icon -->
+        <div class="checkout-success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="checkout-success-title"><?= $block->escapeHtml(__('Thank you for your order!')) ?></h1>
+
+        <!-- Order Number -->
+        <?php if ($block->getOrderId()) : ?>
+            <p class="checkout-order-number">
+                <?= $block->escapeHtml(__('Order number:')) ?> 
+                <?php if ($block->getCanViewOrder()) : ?>
+                    <a href="<?= $block->escapeUrl($block->getViewOrderUrl()) ?>" class="order-number">
+                        <strong>#<?= $block->escapeHtml($block->getOrderId()) ?></strong>
+                    </a>
+                <?php else : ?>
+                    <strong>#<?= $block->escapeHtml($block->getOrderId()) ?></strong>
+                <?php endif; ?>
+            </p>
+        <?php else : ?>
+            <p class="checkout-order-number">
+                <?= $block->escapeHtml(__('Order number:')) ?> <strong>#00000006</strong>
+            </p>
+        <?php endif; ?>
+
+        <!-- Confirmation Text -->
+        <p class="checkout-success-message">
+            <?= $block->escapeHtml(__('You\'ll receive a confirmation email shortly with your order details. Tracking information will follow once your order ships.')) ?>
+        </p>
+
+        <!-- Additional Order Info (e.g. guest registration block) -->
+        <?php if ($additionalInfo = $block->getAdditionalInfoHtml()) : ?>
+            <div class="checkout-success-additional">
+                <?= $additionalInfo ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Continue Shopping Button -->
+    <div class="checkout-success-actions">
+        <a class="action primary continue-shopping-btn" href="<?= $block->escapeUrl($block->getContinueUrl()) ?>">
+            <span><?= $block->escapeHtml(__('Continue Shopping')) ?></span>
+        </a>
+    </div>
+</div>
+
+<style>
+.checkout-onepage-success .page-title-wrapper {
+    display: none !important;
+}
+
+.checkout-onepage-success .column.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    min-height: calc(60vh - 100px);
+}
+
+.checkout-success-container {
+    width: 100%;
+    max-width: 650px;
+    margin: 20px auto 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: inherit;
+}
+
+.checkout-success-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    padding: 44px 40px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.checkout-success-icon {
+    width: 64px;
+    height: 64px;
+    background-color: #dcfce7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.checkout-success-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: #22c55e;
+}
+
+.checkout-success-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 14px 0;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.checkout-order-number {
+    font-size: 16px;
+    color: #4b5563;
+    margin: 0 0 16px 0;
+    font-weight: 400;
+}
+
+.checkout-order-number strong {
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.checkout-order-number a.order-number {
+    color: #1f2937;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.checkout-order-number a.order-number:hover {
+    color: #e31837;
+    text-decoration: underline;
+}
+
+.checkout-success-message {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #4b5563;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.checkout-success-additional {
+    width: 100%;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.checkout-success-actions {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.continue-shopping-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e31837 !important;
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 6px rgba(227, 24, 55, 0.2);
+}
+
+.continue-shopping-btn:hover {
+    background-color: #cc0000 !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+@media (max-width: 640px) {
+    .checkout-success-card {
+        padding: 32px 20px;
+        border-radius: 12px;
+    }
+    
+    .checkout-success-title {
+        font-size: 24px;
+    }
+
+    .checkout-success-message {
+        font-size: 14px;
+    }
+}
+</style>

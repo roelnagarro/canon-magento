@@ -25,6 +25,10 @@ $customerName = ($isLoggedIn && $customerSession->isLoggedIn() && $customerSessi
 if (empty(trim((string)$customerName))) {
     $customerName = 'Scot Francis';
 }
+
+$checkoutSession = $objectManager->get(\Magento\Checkout\Model\Session::class);
+$quote = $checkoutSession->getQuote();
+$cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
 ?>
 <header class="toyota-header">
     <div class="toyota-header-top">
@@ -108,8 +112,25 @@ if (empty(trim((string)$customerName))) {
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
-                <span class="cart-badge">2</span>
+                <span class="cart-badge"><?= (int)$cartQty ?></span>
             </a>
         </div>
     </div>
 </header>
+<script>
+require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
+    var updateBadge = function() {
+        var cart = customerData.get('cart')();
+        var count = 0;
+        if (cart && typeof cart.summary_count !== 'undefined') {
+            count = parseInt(cart.summary_count) || 0;
+        }
+        $('.cart-badge').text(count);
+    };
+    customerData.get('cart').subscribe(updateBadge);
+    updateBadge();
+
+    // Reload cart section to clear stale browser local storage data
+    customerData.reload(['cart'], true);
+});
+</script>

@@ -24,6 +24,12 @@
             <container name="header.inner.right" after="header.inner.left" htmlTag="div" htmlClass="page-header-actions col-l-4 col-m-6"/>
         </referenceContainer>
 
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_image_src" xsi:type="string">images/toyota-icon.svg</argument>
+            </arguments>
+        </referenceBlock>
+
         <move element="page.menu" destination="menu.wrapper" />
         <move element="logo" before="-" destination="menu.wrapper" />
 

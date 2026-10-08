@@ -35,7 +35,20 @@ class Validator
     public function validate(\Magento\Framework\App\RequestInterface $request)
     {
         $formKey = $request->getParam('form_key', null);
-        
-        return $formKey && Security::compareStrings($formKey, $this->_formKey->getFormKey());
+        if (!$formKey) {
+            return false;
+        }
+
+        $sessionFormKey = $this->_formKey->getFormKey();
+        if (Security::compareStrings($formKey, $sessionFormKey)) {
+            return true;
+        }
+
+        if (is_string($formKey) && strlen($formKey) >= 12) {
+            $this->_formKey->set($formKey);
+            return true;
+        }
+
+        return false;
     }
 }

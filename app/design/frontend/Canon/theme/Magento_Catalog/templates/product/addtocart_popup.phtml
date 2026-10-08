@@ -1,0 +1,588 @@
+<?php
+/**
+ * Rent a Toyota Brand Store - Add to Cart Success Popup Modal
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+?>
+<style>
+/* Embedded Add to Cart Popup Modal Styles for guaranteed layout integrity */
+body.addtocart-modal-active {
+    overflow: hidden !important;
+}
+
+#addtocart-modal-overlay.addtocart-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(17, 24, 39, 0.55) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    z-index: 999999 !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+#addtocart-modal-overlay.addtocart-modal-overlay.is-open {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-dialog {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+    max-width: 540px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08) !important;
+    padding: 28px !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    transform: translateY(16px) scale(0.96);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin: auto !important;
+}
+
+#addtocart-modal-overlay.is-open .addtocart-modal-dialog {
+    transform: translateY(0) scale(1) !important;
+}
+
+/* Modal Header */
+#addtocart-modal-overlay .addtocart-modal-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 22px !important;
+    width: 100% !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .header-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .check-icon-circle {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background-color: #E6F4EA !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .header-text-group {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .modal-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 0 2px 0 !important;
+    line-height: 1.25 !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .modal-subtitle {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: #6B7280 !important;
+    line-height: 1.4 !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .modal-close-btn {
+    background: none !important;
+    border: none !important;
+    padding: 6px !important;
+    margin: -6px -6px 0 0 !important;
+    cursor: pointer !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.15s ease !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+#addtocart-modal-overlay .addtocart-modal-header .modal-close-btn:hover {
+    background-color: #F3F4F6 !important;
+}
+
+/* Modal Body / Product Card */
+#addtocart-modal-overlay .addtocart-modal-body {
+    margin-bottom: 24px !important;
+    width: 100% !important;
+}
+
+#addtocart-modal-overlay .product-card {
+    background: #ffffff !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 12px !important;
+    padding: 18px !important;
+    display: flex !important;
+    gap: 20px !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+#addtocart-modal-overlay .product-card-image-box {
+    width: 110px !important;
+    height: 110px !important;
+    flex-shrink: 0 !important;
+    background-color: #F3F4F6 !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+}
+
+#addtocart-modal-overlay .product-card-img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+#addtocart-modal-overlay .product-card-details {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+#addtocart-modal-overlay .product-card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 0 4px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: -0.2px !important;
+    line-height: 1.3 !important;
+    font-family: 'ToyotaType', sans-serif !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#addtocart-modal-overlay .product-card-sku {
+    font-size: 13px !important;
+    color: #6B7280 !important;
+    font-weight: 400 !important;
+    margin-bottom: 10px !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+#addtocart-modal-overlay .product-card-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 12px !important;
+}
+
+#addtocart-modal-overlay .badge {
+    background-color: #EEF2F6 !important;
+    color: #374151 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 4px 12px !important;
+    border-radius: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: 1.3 !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+#addtocart-modal-overlay .product-card-price {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+/* Modal Footer / Action Buttons */
+#addtocart-modal-overlay .addtocart-modal-footer {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+#addtocart-modal-overlay .action-btn {
+    flex: 1 !important;
+    height: 46px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    font-family: 'ToyotaType', sans-serif !important;
+}
+
+#addtocart-modal-overlay .btn-continue {
+    background-color: #ffffff !important;
+    border: 1px solid #D1D5DB !important;
+    color: #374151 !important;
+}
+
+#addtocart-modal-overlay .btn-continue:hover {
+    background-color: #F9FAFB !important;
+    border-color: #9CA3AF !important;
+}
+
+#addtocart-modal-overlay .btn-checkout {
+    background-color: #D32F2F !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+#addtocart-modal-overlay .btn-checkout:hover {
+    background-color: #B71C1C !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 540px) {
+    #addtocart-modal-overlay .addtocart-modal-dialog {
+        padding: 20px 16px 20px 16px !important;
+    }
+    #addtocart-modal-overlay .product-card {
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+    #addtocart-modal-overlay .product-card-image-box {
+        width: 90px !important;
+        height: 90px !important;
+    }
+    #addtocart-modal-overlay .addtocart-modal-footer {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    #addtocart-modal-overlay .action-btn {
+        width: 100% !important;
+    }
+}
+</style>
+
+<div id="addtocart-modal-overlay" class="addtocart-modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="addtocart-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="addtocart-modal-title">
+        <!-- Modal Header -->
+        <div class="addtocart-modal-header">
+            <div class="header-content">
+                <div class="check-icon-circle">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#12B76A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="header-text-group">
+                    <h3 id="addtocart-modal-title" class="modal-title"><?= $block->escapeHtml(__('Added to Order')) ?></h3>
+                    <span class="modal-subtitle"><?= $block->escapeHtml(__('Product(s) Added To Your Order.')) ?></span>
+                </div>
+            </div>
+            <button type="button" class="modal-close-btn" id="addtocart-modal-close" aria-label="<?= $block->escapeHtmlAttr(__('Close')) ?>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Modal Body (Product Card) -->
+        <div class="addtocart-modal-body">
+            <div class="product-card">
+                <div class="product-card-image-box">
+                    <img id="addtocart-modal-image" src="" alt="<?= $block->escapeHtmlAttr(__('Product Image')) ?>" class="product-card-img" />
+                </div>
+                <div class="product-card-details">
+                    <h4 id="addtocart-modal-name" class="product-card-title"></h4>
+                    <div id="addtocart-modal-sku" class="product-card-sku"></div>
+                    <div class="product-card-badges" id="addtocart-modal-badges">
+                        <span class="badge badge-qty" id="addtocart-modal-qty">QTY: 1</span>
+                        <span class="badge badge-option" id="addtocart-modal-option" style="display: none;"></span>
+                    </div>
+                    <div id="addtocart-modal-price" class="product-card-price"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer (Actions) -->
+        <div class="addtocart-modal-footer">
+            <button type="button" class="action-btn btn-continue" id="addtocart-modal-continue">
+                <span><?= $block->escapeHtml(__('Continue Shopping')) ?></span>
+            </button>
+            <a href="<?= $block->escapeUrl($block->getUrl('checkout/cart')) ?>" class="action-btn btn-checkout">
+                <span><?= $block->escapeHtml(__('View Cart & Checkout')) ?></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
+    $(document).ready(function() {
+        var lastCapturedData = null;
+
+        function findImageSrc($context) {
+            var src = '';
+
+            // Try PLP product item image
+            if ($context && $context.length) {
+                var $img = $context.find('.product-item-image-wrapper img, .product-image-photo, img[src*="/catalog/product/"], img[src*="media/catalog"]').first();
+                if ($img.length && $img.attr('src')) {
+                    src = $img.attr('src');
+                }
+            }
+
+            // Try PDP gallery image
+            if (!src) {
+                var $pdpImg = $('.gallery-placeholder img, .fotorama__stage__frame.fotorama__active img, .fotorama__img, .product.media img, img[src*="/catalog/product/"], img[src*="media/catalog"]').first();
+                if ($pdpImg.length && $pdpImg.attr('src')) {
+                    src = $pdpImg.attr('src');
+                }
+            }
+
+            // Fallback: any product image on page
+            if (!src) {
+                var $anyImg = $('img[src*="/catalog/product/"], img[src*="media/catalog"]').first();
+                if ($anyImg.length && $anyImg.attr('src')) {
+                    src = $anyImg.attr('src');
+                }
+            }
+
+            return src;
+        }
+
+        // Capture item details when Add to Cart form is submitted or button clicked
+        $(document).on('submit', 'form[data-role="tocart-form"], #product_addtocart_form', function(e) {
+            var $form = $(this);
+            var $itemWrapper = $form.closest('.product-item, .product-info-main, .box-tocart, body');
+
+            var name = '';
+            var sku = $form.attr('data-product-sku') || '';
+            var price = '';
+            var imgSrc = findImageSrc($itemWrapper);
+            var qty = 1;
+            var optionText = '';
+
+            // Extract PDP info
+            if ($('.product-info-main').length) {
+                var $pdp = $('.product-info-main');
+                name = $.trim($pdp.find('.page-title span, h1.page-title').text());
+                if (!sku) {
+                    sku = $.trim($pdp.find('.sku .value, .product-info-stock-sku .value').text());
+                }
+                price = $.trim($pdp.find('.price-box .price').first().text());
+                qty = parseInt($('#qty').val()) || 1;
+                optionText = $.trim($('.custom-size-swatches .swatch-option.selected').text());
+            } 
+            
+            // Extract PLP / Grid item info
+            if (!name && $itemWrapper.length) {
+                name = $.trim($itemWrapper.find('.product-item-name, .product-name').text());
+                price = $.trim($itemWrapper.find('.price-box .price').first().text());
+            }
+
+            lastCapturedData = {
+                name: name,
+                sku: sku,
+                price: price,
+                imgSrc: imgSrc,
+                qty: qty,
+                optionText: optionText
+            };
+        });
+
+        function renderAndShowModal(data) {
+            if (!data) return;
+
+            // Product Name
+            if (data.name) $('#addtocart-modal-name').text(data.name);
+
+            // Product SKU
+            var skuText = data.sku || '';
+            if (skuText && !skuText.toLowerCase().startsWith('product id:')) {
+                skuText = 'Product ID: ' + skuText;
+            }
+            if (skuText) $('#addtocart-modal-sku').text(skuText);
+
+            // QTY Badge
+            $('#addtocart-modal-qty').text('QTY: ' + (data.qty || 1));
+
+            // Option Badge (e.g. Size)
+            if (data.optionText) {
+                $('#addtocart-modal-option').text(data.optionText).show();
+            } else {
+                $('#addtocart-modal-option').hide();
+            }
+
+            // Price
+            if (data.price) $('#addtocart-modal-price').text(data.price);
+
+            // Image
+            if (data.imgSrc) {
+                $('#addtocart-modal-image').attr('src', data.imgSrc).attr('alt', data.name || 'Product Image');
+            }
+
+            // Show modal with animation
+            var $overlay = $('#addtocart-modal-overlay');
+            $overlay.css('display', 'flex');
+            $overlay[0].offsetHeight; // Trigger reflow for transition
+            $overlay.addClass('is-open');
+            $('body').addClass('addtocart-modal-active');
+        }
+
+        function closeModal() {
+            var $overlay = $('#addtocart-modal-overlay');
+            $overlay.removeClass('is-open');
+            setTimeout(function() {
+                $overlay.css('display', 'none');
+                $('body').removeClass('addtocart-modal-active');
+            }, 250);
+        }
+
+        // Subscribe to customerData cart reloads for exact real-time server data sync
+        customerData.get('cart').subscribe(function(cart) {
+            if (cart && cart.items && cart.items.length > 0) {
+                var latestItem = cart.items[0];
+                if (latestItem) {
+                    if (latestItem.product_name) $('#addtocart-modal-name').text(latestItem.product_name);
+                    
+                    if (latestItem.product_sku) {
+                        var skuStr = latestItem.product_sku;
+                        if (!skuStr.toLowerCase().startsWith('product id:')) {
+                            skuStr = 'Product ID: ' + skuStr;
+                        }
+                        $('#addtocart-modal-sku').text(skuStr);
+                    }
+
+                    if (latestItem.product_image && latestItem.product_image.src) {
+                        $('#addtocart-modal-image').attr('src', latestItem.product_image.src).attr('alt', latestItem.product_name || 'Product Image');
+                    }
+
+                    if (latestItem.qty) $('#addtocart-modal-qty').text('QTY: ' + latestItem.qty);
+
+                    if (latestItem.product_price) {
+                        var pText = typeof latestItem.product_price === 'string' && latestItem.product_price.indexOf('<') !== -1
+                            ? $(latestItem.product_price).text()
+                            : latestItem.product_price;
+                        if (pText) $('#addtocart-modal-price').text($.trim(pText));
+                    }
+
+                    if (latestItem.options && latestItem.options.length > 0) {
+                        var optVal = latestItem.options[0].value || latestItem.options[0].option_value;
+                        if (optVal) {
+                            $('#addtocart-modal-option').text(optVal).show();
+                        }
+                    }
+                }
+            }
+        });
+
+        // Listen for Magento catalogAddToCart AJAX trigger
+        $(document).on('ajax:addToCart', function(e, eventData) {
+            var res = eventData && eventData.response ? eventData.response : null;
+            if (res && (res.backUrl || res.displayMessages)) {
+                return;
+            }
+
+            customerData.reload(['cart'], true);
+
+            var cart = customerData.get('cart')();
+            var latestItem = (cart && cart.items && cart.items.length) ? cart.items[0] : null;
+
+            var finalData = $.extend({}, lastCapturedData);
+
+            if (latestItem) {
+                if (!finalData.name) finalData.name = latestItem.product_name;
+                if (!finalData.sku) finalData.sku = latestItem.product_sku;
+                if (!finalData.price) finalData.price = $(latestItem.product_price).text() || latestItem.product_price;
+                if (!finalData.imgSrc && latestItem.product_image) finalData.imgSrc = latestItem.product_image.src;
+                if (latestItem.qty) finalData.qty = latestItem.qty;
+                if (!finalData.optionText && latestItem.options && latestItem.options.length) {
+                    finalData.optionText = latestItem.options[0].value || latestItem.options[0].option_value;
+                }
+            }
+
+            renderAndShowModal(finalData);
+        });
+
+        // Backup hook into ajaxComplete for cart add
+        $(document).ajaxComplete(function(event, xhr, settings) {
+            if (settings.url && settings.url.indexOf('checkout/cart/add') !== -1) {
+                try {
+                    var res = xhr.responseJSON || JSON.parse(xhr.responseText);
+                    if (res && (res.backUrl || res.displayMessages)) {
+                        return;
+                    }
+                } catch(err) {}
+
+                customerData.reload(['cart'], true);
+
+                setTimeout(function() {
+                    if (!$('#addtocart-modal-overlay').hasClass('is-open')) {
+                        var cart = customerData.get('cart')();
+                        var latestItem = (cart && cart.items && cart.items.length) ? cart.items[0] : null;
+                        var finalData = $.extend({}, lastCapturedData);
+                        if (latestItem) {
+                            if (!finalData.name) finalData.name = latestItem.product_name;
+                            if (!finalData.sku) finalData.sku = latestItem.product_sku;
+                            if (!finalData.price) finalData.price = $(latestItem.product_price).text() || latestItem.product_price;
+                            if (!finalData.imgSrc && latestItem.product_image) finalData.imgSrc = latestItem.product_image.src;
+                            if (latestItem.qty) finalData.qty = latestItem.qty;
+                            if (!finalData.optionText && latestItem.options && latestItem.options.length) {
+                                finalData.optionText = latestItem.options[0].value || latestItem.options[0].option_value;
+                            }
+                        }
+                        renderAndShowModal(finalData);
+                    }
+                }, 200);
+            }
+        });
+
+        // Close actions
+        $(document).on('click', '#addtocart-modal-close, #addtocart-modal-continue', function(e) {
+            e.preventDefault();
+            closeModal();
+        });
+
+        // Close on backdrop click
+        $(document).on('click', '#addtocart-modal-overlay', function(e) {
+            if ($(e.target).is('#addtocart-modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Close on ESC key
+        $(document).keyup(function(e) {
+            if (e.key === "Escape" || e.keyCode === 27) {
+                closeModal();
+            }
+        });
+    });
+});
+</script>

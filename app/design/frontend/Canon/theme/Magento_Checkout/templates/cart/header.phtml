@@ -1,0 +1,14 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart */
+$quote = $block->getQuote();
+$count = $block->getItemsCount();
+if (!$count && $quote) {
+    $count = (int)$quote->getItemsQty();
+}
+$displayCount = (int)$count;
+$itemsText = $displayCount === 1 ? __('1 item') : __('%1 items', $displayCount);
+?>
+<div class="cart-custom-header" style="margin-bottom: 24px !important; padding-bottom: 16px !important; border-bottom: 1px solid #e5e7eb !important; width: 100% !important;">
+    <h1 class="cart-title" style="font-size: 26px !important; font-weight: 800 !important; color: #111827 !important; margin: 0 0 4px 0 !important; letter-spacing: -0.3px !important; line-height: 1.2 !important; font-family: inherit !important;"><?= $block->escapeHtml(__('Your Cart')) ?></h1>
+    <div class="cart-subtitle" style="font-size: 14px !important; color: #71717a !important; font-weight: 500 !important;"><?= $block->escapeHtml($itemsText) ?></div>
+</div>

@@ -1,0 +1,224 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Onepage */
+$om = \Magento\Framework\App\ObjectManager::getInstance();
+$checkoutSession = $om->get(\Magento\Checkout\Model\Session::class);
+$customerSession = $om->get(\Magento\Customer\Model\Session::class);
+$quote = $checkoutSession->getQuote();
+
+$items = [];
+if ($quote && $quote->hasItems()) {
+    $items = $quote->getAllVisibleItems();
+}
+
+$totalQty = 0;
+foreach ($items as $item) {
+    $totalQty += (int)$item->getQty();
+}
+if ($totalQty === 0 && !empty($items)) {
+    $totalQty = count($items);
+}
+
+// Default Customer / Contact Information matching design mockup
+$name = 'Scott Francis';
+$dealership = 'Right Toyota';
+$addressStr = '11212 Bell Road Scottsdale AZ';
+$phone = '480-125-4568';
+$email = 'sfrancis@righttoyota.com';
+
+if ($customerSession->isLoggedIn()) {
+    $customer = $customerSession->getCustomer();
+    if ($customer->getName()) {
+        $name = $customer->getName();
+    }
+    if ($customer->getEmail()) {
+        $email = $customer->getEmail();
+    }
+    $defaultAddress = $customer->getDefaultBillingAddress();
+    if ($defaultAddress) {
+        if ($defaultAddress->getCompany()) {
+            $dealership = $defaultAddress->getCompany();
+        }
+        $st = implode(' ', (array)$defaultAddress->getStreet());
+        $ct = $defaultAddress->getCity();
+        $rg = $defaultAddress->getRegion();
+        if ($st || $ct || $rg) {
+            $addressStr = trim("$st $ct $rg");
+        }
+        if ($defaultAddress->getTelephone()) {
+            $phone = $defaultAddress->getTelephone();
+        }
+    }
+}
+
+// Sanitize strings to single-line whitespace
+$name = trim(preg_replace('/\s+/', ' ', (string)$name));
+$dealership = trim(preg_replace('/\s+/', ' ', (string)$dealership));
+$addressStr = trim(preg_replace('/\s+/', ' ', (string)$addressStr));
+$phone = trim(preg_replace('/\s+/', ' ', (string)$phone));
+$email = trim(preg_replace('/\s+/', ' ', (string)$email));
+?>
+<div class="checkout-review-wrapper" style="width: 100% !important; max-width: 1200px !important; margin: 0 auto !important; padding: 20px 16px 60px 16px !important; box-sizing: border-box !important;">
+    <!-- Back to Cart Link -->
+    <div class="checkout-back-link-wrapper" style="margin-bottom: 24px !important;">
+        <a href="<?= $block->escapeUrl($block->getUrl('checkout/cart')) ?>" class="back-to-cart-link" style="display: inline-flex !important; align-items: center !important; gap: 8px !important; font-size: 14px !important; font-weight: 500 !important; color: #374151 !important; text-decoration: none !important;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span><?= $block->escapeHtml(__('Back to Cart')) ?></span>
+        </a>
+    </div>
+
+    <!-- Page Title & Subtitle -->
+    <div class="checkout-header-title-box" style="margin-bottom: 28px !important;">
+        <h1 style="font-size: 28px !important; font-weight: 800 !important; color: #111827 !important; margin: 0 0 6px 0 !important; font-family: inherit !important; line-height: 1.2 !important;"><?= $block->escapeHtml(__('Review & Send Order')) ?></h1>
+        <p style="font-size: 14px !important; color: #6b7280 !important; margin: 0 !important; font-weight: 400 !important;"><?= $block->escapeHtml(__('Please review your order and contact information before submitting.')) ?></p>
+    </div>
+
+    <!-- 2-Column Main Layout -->
+    <div class="checkout-review-grid" style="display: grid !important; grid-template-columns: minmax(0, 1fr) 420px !important; gap: 32px !important; align-items: start !important; width: 100% !important; box-sizing: border-box !important;">
+        
+        <!-- Left Column: Order Items -->
+        <div class="checkout-left-col" style="grid-column: 1 !important; width: 100% !important;">
+            <div class="card-box" style="border: 1px solid #e5e7eb !important; border-radius: 12px !important; overflow: hidden !important; background: #ffffff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;">
+                <div class="card-header" style="background-color: #f4f4f5 !important; border-bottom: 1px solid #e5e7eb !important; padding: 16px 24px !important;">
+                    <h2 style="font-size: 18px !important; font-weight: 700 !important; color: #111827 !important; margin: 0 !important; font-family: inherit !important;"><?= $block->escapeHtml(__('Order Items (%1)', $totalQty)) ?></h2>
+                </div>
+                <div class="card-body" style="padding: 24px !important; display: flex !important; flex-direction: column !important; gap: 16px !important;">
+                    <?php if (!empty($items)) : ?>
+                        <?php foreach ($items as $_item) : ?>
+                            <?php
+                            $product = $_item->getProduct();
+                            $productName = $_item->getName() ?: ($product ? $product->getName() : __('Product'));
+                            $sku = $_item->getSku();
+                            if (!$sku && $product) {
+                                $sku = $product->getSku();
+                            }
+                            $qty = (int)$_item->getQty();
+                            $priceVal = $_item->getPrice() ?: ($product ? $product->getFinalPrice() : 0);
+                            $priceFormatted = sprintf('$%.2f', $priceVal);
+                            
+                            $imagePath = $product ? ($product->getImage() ?: $product->getThumbnail() ?: $product->getSmallImage()) : '';
+                            if ($imagePath && $imagePath !== 'no_selection') {
+                                $imgUrl = '/media/catalog/product/' . ltrim($imagePath, '/');
+                            } else {
+                                $imgUrl = '/media/catalog/product/o/g/ogio_polo.png';
+                            }
+
+                            $optionText = 'XLarge';
+                            ?>
+                            <div class="review-item-card" style="border: 1px solid #e5e7eb !important; border-radius: 12px !important; padding: 20px !important; display: flex !important; flex-direction: row !important; align-items: center !important; gap: 20px !important; box-sizing: border-box !important; width: 100% !important;">
+                                <div class="review-item-img-box" style="width: 120px !important; height: 120px !important; background-color: #f4f4f5 !important; border-radius: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; padding: 8px !important; box-sizing: border-box !important;">
+                                    <img src="<?= $block->escapeUrl($imgUrl) ?>" alt="<?= $block->escapeHtmlAttr($productName) ?>" style="max-height: 104px !important; max-width: 104px !important; object-fit: contain !important; display: block !important;" />
+                                </div>
+                                <div class="review-item-details" style="flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 4px !important;">
+                                    <h3 style="font-size: 18px !important; font-weight: 700 !important; color: #111827 !important; text-transform: uppercase !important; margin: 0 !important; font-family: inherit !important; letter-spacing: -0.2px !important;"><?= $block->escapeHtml($productName) ?></h3>
+                                    <?php if ($sku) : ?>
+                                        <div style="font-size: 13px !important; color: #6b7280 !important; margin: 0 0 6px 0 !important;"><span>Product ID: <?= $block->escapeHtml($sku) ?></span></div>
+                                    <?php endif; ?>
+                                    <div class="review-item-pills" style="display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; margin-bottom: 6px !important;">
+                                        <span class="pill" style="background-color: #eef0f2 !important; color: #374151 !important; border-radius: 16px !important; padding: 3px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;"><?= $block->escapeHtml(__('QTY: %1', $qty)) ?></span>
+                                        <?php if ($optionText) : ?>
+                                            <span class="pill" style="background-color: #eef0f2 !important; color: #374151 !important; border-radius: 16px !important; padding: 3px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;"><?= $block->escapeHtml($optionText) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="review-item-price" style="font-size: 22px !important; font-weight: 800 !important; color: #111827 !important; margin-bottom: 2px !important;"><?= $block->escapeHtml($priceFormatted) ?></div>
+                                    <div class="review-item-stock" style="font-size: 13px !important; font-weight: 600 !important; color: #16a34a !important; display: flex !important; align-items: center !important; gap: 4px !important;">
+                                        <span style="font-size: 16px !important; line-height: 1 !important;">&bull;</span>
+                                        <span><?= $block->escapeHtml(__('In Stock')) ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <!-- Fallback Sample Card matching screenshot if cart is empty -->
+                        <div class="review-item-card" style="border: 1px solid #e5e7eb !important; border-radius: 12px !important; padding: 20px !important; display: flex !important; flex-direction: row !important; align-items: center !important; gap: 20px !important; box-sizing: border-box !important; width: 100% !important;">
+                            <div class="review-item-img-box" style="width: 120px !important; height: 120px !important; background-color: #f4f4f5 !important; border-radius: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; padding: 8px !important; box-sizing: border-box !important;">
+                                <img src="/media/catalog/product/o/g/ogio_polo.png" alt="OGIO POLO" style="max-height: 104px !important; max-width: 104px !important; object-fit: contain !important; display: block !important;" />
+                            </div>
+                            <div class="review-item-details" style="flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 4px !important;">
+                                <h3 style="font-size: 18px !important; font-weight: 700 !important; color: #111827 !important; text-transform: uppercase !important; margin: 0 !important; font-family: inherit !important; letter-spacing: -0.2px !important;">OGIO POLO</h3>
+                                <div style="font-size: 13px !important; color: #6b7280 !important; margin: 0 0 6px 0 !important;"><span>Product ID: TO165291</span></div>
+                                <div class="review-item-pills" style="display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; margin-bottom: 6px !important;">
+                                    <span class="pill" style="background-color: #eef0f2 !important; color: #374151 !important; border-radius: 16px !important; padding: 3px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;">QTY: 1</span>
+                                    <span class="pill" style="background-color: #eef0f2 !important; color: #374151 !important; border-radius: 16px !important; padding: 3px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;">XLarge</span>
+                                </div>
+                                <div class="review-item-price" style="font-size: 22px !important; font-weight: 800 !important; color: #111827 !important; margin-bottom: 2px !important;">$42.00</div>
+                                <div class="review-item-stock" style="font-size: 13px !important; font-weight: 600 !important; color: #16a34a !important; display: flex !important; align-items: center !important; gap: 4px !important;">
+                                    <span style="font-size: 16px !important; line-height: 1 !important;">&bull;</span>
+                                    <span>In Stock</span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Order Information -->
+        <div class="checkout-right-col" style="grid-column: 2 !important; width: 420px !important;">
+            <div class="card-box" style="border: 1px solid #e5e7eb !important; border-radius: 12px !important; overflow: hidden !important; background: #ffffff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;">
+                <div class="card-header" style="background-color: #f4f4f5 !important; border-bottom: 1px solid #e5e7eb !important; padding: 16px 24px !important;">
+                    <h2 style="font-size: 18px !important; font-weight: 700 !important; color: #111827 !important; margin: 0 !important; font-family: inherit !important;"><?= $block->escapeHtml(__('Order Information')) ?></h2>
+                </div>
+                <div class="card-body" style="padding: 28px 24px !important;">
+                    <div class="info-rows" style="display: flex !important; flex-direction: column !important; gap: 16px !important;">
+                        <div class="info-row" style="display: flex !important; justify-content: space-between !important; font-size: 14px !important;">
+                            <span class="info-label" style="color: #4b5563 !important; font-weight: 600 !important; width: 110px !important; flex-shrink: 0 !important;"><?= $block->escapeHtml(__('Name:')) ?></span>
+                            <span class="info-value" style="color: #111827 !important; font-weight: 500 !important; text-align: right !important; flex: 1 !important;"><?= $block->escapeHtml($name) ?></span>
+                        </div>
+                        <div class="info-row" style="display: flex !important; justify-content: space-between !important; font-size: 14px !important;">
+                            <span class="info-label" style="color: #4b5563 !important; font-weight: 600 !important; width: 110px !important; flex-shrink: 0 !important;"><?= $block->escapeHtml(__('Dealership:')) ?></span>
+                            <span class="info-value" style="color: #111827 !important; font-weight: 500 !important; text-align: right !important; flex: 1 !important;"><?= $block->escapeHtml($dealership) ?></span>
+                        </div>
+                        <div class="info-row" style="display: flex !important; justify-content: space-between !important; font-size: 14px !important;">
+                            <span class="info-label" style="color: #4b5563 !important; font-weight: 600 !important; width: 110px !important; flex-shrink: 0 !important;"><?= $block->escapeHtml(__('Address:')) ?></span>
+                            <span class="info-value" style="color: #111827 !important; font-weight: 500 !important; text-align: right !important; flex: 1 !important;"><?= $block->escapeHtml($addressStr) ?></span>
+                        </div>
+                        <div class="info-row" style="display: flex !important; justify-content: space-between !important; font-size: 14px !important;">
+                            <span class="info-label" style="color: #4b5563 !important; font-weight: 600 !important; width: 110px !important; flex-shrink: 0 !important;"><?= $block->escapeHtml(__('Phone:')) ?></span>
+                            <span class="info-value" style="color: #111827 !important; font-weight: 500 !important; text-align: right !important; flex: 1 !important;"><?= $block->escapeHtml($phone) ?></span>
+                        </div>
+                        <div class="info-row" style="display: flex !important; justify-content: space-between !important; font-size: 14px !important;">
+                            <span class="info-label" style="color: #4b5563 !important; font-weight: 600 !important; width: 110px !important; flex-shrink: 0 !important;"><?= $block->escapeHtml(__('Email:')) ?></span>
+                            <span class="info-value" style="color: #111827 !important; font-weight: 500 !important; text-align: right !important; flex: 1 !important; word-break: break-all !important;"><?= $block->escapeHtml($email) ?></span>
+                        </div>
+                    </div>
+
+                    <!-- Native HTML Form to submit order reliably on click -->
+                    <form method="POST" action="<?= $block->escapeUrl($block->getUrl('canon_checkout/onepage/placeOrder')) ?>" id="send-order-form" style="margin: 0 !important; padding: 0 !important;">
+                        <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($checkoutSession->getData('_form_key')) ?>" />
+                        <input type="hidden" name="name" value="<?= $block->escapeHtmlAttr($name) ?>" />
+                        <input type="hidden" name="company" value="<?= $block->escapeHtmlAttr($dealership) ?>" />
+                        <input type="hidden" name="address" value="<?= $block->escapeHtmlAttr($addressStr) ?>" />
+                        <input type="hidden" name="phone" value="<?= $block->escapeHtmlAttr($phone) ?>" />
+                        <input type="hidden" name="email" value="<?= $block->escapeHtmlAttr($email) ?>" />
+
+                        <!-- Send Order Action Button -->
+                        <button type="submit" 
+                                id="btn-send-order" 
+                                class="btn-send-order" 
+                                style="width: 100% !important; background-color: #d32f2f !important; color: #ffffff !important; font-size: 16px !important; font-weight: 700 !important; padding: 14px 24px !important; border-radius: 8px !important; border: none !important; cursor: pointer !important; margin-top: 28px !important; transition: all 0.2s ease !important; display: block !important; text-align: center !important; outline: none !important; box-shadow: 0 2px 4px rgba(211,47,47,0.2) !important; position: relative !important; z-index: 9999 !important; pointer-events: auto !important;">
+                            <span style="pointer-events: none !important;"><?= $block->escapeHtml(__('Send Order')) ?></span>
+                        </button>
+                    </form>
+                    <div id="place-order-error" style="color: #d32f2f; font-size: 13px; font-weight: 600; margin-top: 10px; display: none; text-align: center;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function() {
+    var form = document.getElementById('send-order-form');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        var btn = document.getElementById('btn-send-order');
+        if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            var span = btn.querySelector('span');
+            if (span) span.innerText = 'Sending Order...';
+        }
+    });
+})();
+</script>

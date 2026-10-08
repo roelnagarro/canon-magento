@@ -27,89 +27,57 @@ $_helper = $block->getData('outputHelper');
     $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
     $pos = $block->getPositioned();
     ?>
-    <div class="products wrapper <?= /* @noEscape */ $viewMode ?> products-<?= /* @noEscape */ $viewMode ?> plp-custom-layout">
-        <ol class="products list items product-items plp-grid">
+    <div class="products wrapper <?= /* @noEscape */ $viewMode ?> products-<?= /* @noEscape */ $viewMode ?> plp-custom-layout" style="position: relative !important; z-index: 1 !important; clear: both !important; width: 100% !important; margin-top: 0 !important;">
+        <ol class="products list items product-items plp-grid" style="display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 24px !important; margin: 0 !important; padding: 0 !important; list-style: none !important; width: 100% !important;">
             <?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
             <?php foreach ($_productCollection as $_product): ?>
-            <li class="item product product-item">
+            <li class="item product product-item" style="background: #ffffff !important; border: 1px solid #e5e7eb !important; border-radius: 12px !important; overflow: hidden !important; display: flex !important; flex-direction: column !important; position: relative !important; width: 100% !important; box-sizing: border-box !important; margin: 0 !important; padding: 0 !important;">
                 <div class="product-item-info"
                      id="product-item-info_<?= /* @noEscape */ $_product->getId() ?>"
-                     data-container="product-grid">
+                     data-container="product-grid"
+                     style="display: flex !important; flex-direction: column !important; height: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; position: static !important; border: none !important; box-shadow: none !important; background: #ffffff !important;">
                     <?php
                     $productImage = $block->getImage($_product, $imageDisplayArea);
                     ?>
                     
                     <!-- Product Image Container -->
-                    <div class="product-item-image-wrapper">
+                    <div class="product-item-image-wrapper" style="background-color: #f5f6f8 !important; border-radius: 12px 12px 0 0 !important; height: 260px !important; width: 100% !important; position: relative !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 20px !important; box-sizing: border-box !important; overflow: hidden !important;">
                         <a href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>"
                            class="product photo product-item-photo"
-                           tabindex="-1">
+                           tabindex="-1"
+                           style="display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; height: 100% !important; padding: 0 !important;">
                             <?= $productImage->toHtml() ?>
                         </a>
                     </div>
 
                     <!-- Product Details -->
-                    <div class="product details product-item-details">
+                    <div class="product details product-item-details" style="padding: 20px !important; background-color: #ffffff !important; display: flex !important; flex-direction: column !important; flex-grow: 1 !important; justify-content: flex-start !important; box-sizing: border-box !important; border-radius: 0 0 12px 12px !important; position: static !important; margin: 0 !important;">
                         <?php $_productNameStripped = $block->stripTags($_product->getName(), null, true); ?>
-                        <strong class="product name product-item-name">
+                        <strong class="product name product-item-name" style="text-transform: uppercase !important; font-size: 13px !important; font-weight: 700 !important; color: #111827 !important; letter-spacing: 0.3px !important; margin: 0 0 8px 0 !important; line-height: 1.35 !important; display: block !important;">
                             <a class="product-item-link"
-                               href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>">
+                               href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>"
+                               style="color: #111827 !important; text-decoration: none !important; font-weight: 700 !important; font-size: 13px !important;">
                                 <?= /* @noEscape */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
                             </a>
                         </strong>
 
-                        <div class="price-box price-final_price">
+                        <div class="price-box price-final_price" style="margin: 0 0 8px 0 !important;">
                             <?= /* @noEscape */ $block->getProductPrice($_product) ?>
                         </div>
 
                         <!-- Stock Status Indicator -->
-                        <div class="product-stock-status">
+                        <div class="product-stock-status" style="margin-top: 2px !important; display: flex !important; align-items: center !important;">
                             <?php if ($_product->isAvailable()): ?>
-                                <span class="stock available">
-                                    <span class="stock-dot green-dot"></span>
+                                <span class="stock available" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; font-size: 12px !important; color: #16a34a !important; font-weight: 600 !important;">
+                                    <span class="stock-dot green-dot" style="width: 6px !important; height: 6px !important; background-color: #16a34a !important; border-radius: 50% !important; display: inline-block !important; flex-shrink: 0 !important;"></span>
                                     <span><?= $escaper->escapeHtml(__('In Stock')) ?></span>
                                 </span>
                             <?php else: ?>
-                                <span class="stock unavailable">
-                                    <span class="stock-dot grey-dot"></span>
+                                <span class="stock unavailable" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; font-size: 12px !important; color: #9ca3af !important; font-weight: 500 !important;">
+                                    <span class="stock-dot grey-dot" style="width: 6px !important; height: 6px !important; background-color: #9ca3af !important; border-radius: 50% !important; display: inline-block !important; flex-shrink: 0 !important;"></span>
                                     <span><?= $escaper->escapeHtml(__('Out of Stock')) ?></span>
                                 </span>
                             <?php endif; ?>
-                        </div>
-
-                        <!-- Add To Cart Form -->
-                        <div class="product-item-inner-actions">
-                            <div class="product actions product-item-actions">
-                                <div class="actions-primary">
-                                    <?php if ($_product->isSaleable()): ?>
-                                        <?php $postParams = $block->getAddToCartPostParams($_product); ?>
-                                        <form data-role="tocart-form"
-                                              data-product-sku="<?= $escaper->escapeHtml($_product->getSku()) ?>"
-                                              action="<?= $escaper->escapeUrl($postParams['action']) ?>"
-                                              data-mage-init='{"catalogAddToCart": {}}'
-                                              method="post">
-                                            <?php $options = $block->getData('viewModel') ? $block->getData('viewModel')->getOptionsData($_product) : []; ?>
-                                            <?php foreach ($options as $optionItem): ?>
-                                                <input type="hidden"
-                                                       name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
-                                                       value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
-                                            <?php endforeach; ?>
-                                            <input type="hidden"
-                                                   name="product"
-                                                   value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
-                                            <input type="hidden"
-                                                   name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>"
-                                                   value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
-                                            <?= $block->getBlockHtml('formkey') ?>
-                                            <button type="submit"
-                                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
-                                                    class="action tocart primary">
-                                                <span><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
 
                     </div>

@@ -1,0 +1,42 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart */
+$quote = $block->getQuote();
+$items = [];
+if ($quote && $quote->hasItems()) {
+    $items = $quote->getAllVisibleItems();
+}
+if (empty($items)) {
+    $items = $block->getItems();
+}
+$isEmpty = empty($items);
+?>
+<div class="cart-page-wrapper" style="width: 100% !important; max-width: 1280px !important; margin: 0 auto !important; padding: 12px 16px 40px 16px !important; box-sizing: border-box !important;">
+    <?php include $block->getTemplateFile('Magento_Checkout::cart/header.phtml'); ?>
+
+    <?php if ($isEmpty) : ?>
+        <div class="cart-empty-state-box" style="background: #ffffff !important; border: 1px solid #e5e7eb !important; border-radius: 16px !important; padding: 60px 24px !important; text-align: center !important; margin: 20px 0 40px 0 !important; width: 100% !important; box-sizing: border-box !important;">
+            <div class="cart-empty-icon" style="width: 72px !important; height: 72px !important; background-color: #f4f4f5 !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 20px auto !important;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            <h2 style="font-size: 22px !important; font-weight: 800 !important; color: #111827 !important; margin: 0 0 8px 0 !important; font-family: inherit !important;"><?= $block->escapeHtml(__('Your cart is currently empty')) ?></h2>
+            <p style="font-size: 14px !important; color: #71717a !important; margin: 0 0 24px 0 !important; font-weight: 400 !important;"><?= $block->escapeHtml(__('Explore our collection and add items to your cart.')) ?></p>
+            <a href="<?= $block->escapeUrl($block->getUrl('')) ?>" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; background-color: #d32f2f !important; color: #ffffff !important; font-size: 14px !important; font-weight: 700 !important; padding: 12px 28px !important; border-radius: 8px !important; text-decoration: none !important; transition: background-color 0.2s ease !important;">
+                <span><?= $block->escapeHtml(__('Continue Shopping')) ?></span>
+            </a>
+        </div>
+    <?php else : ?>
+        <div class="cart-container" style="display: grid !important; grid-template-columns: minmax(0, 1fr) 380px !important; gap: 40px !important; align-items: start !important; width: 100% !important; float: none !important; clear: both !important; box-sizing: border-box !important;">
+            <div class="cart-left-col" style="grid-column: 1 !important; width: 100% !important; float: none !important; clear: none !important; display: flex !important; flex-direction: column !important; gap: 20px !important;">
+                <?php include $block->getTemplateFile('Magento_Checkout::cart/form.phtml'); ?>
+            </div>
+            <div class="cart-right-col" style="grid-column: 2 !important; width: 380px !important; min-width: 380px !important; max-width: 380px !important; float: none !important; clear: none !important;">
+                <?php include $block->getTemplateFile('Magento_Checkout::cart/summary.phtml'); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Custom Toyota Theme Cart Empty Layout Update
+ */
+-->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.empty" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.summary" remove="true" display="false"/>
+        <referenceContainer name="checkout.cart.summary.title" remove="true"/>
+        <referenceBlock name="checkout.cart.shipping" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.methods" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.methods.bottom" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.coupon" remove="true" display="false"/>
+        <referenceBlock name="checkout.cart.shortcut.buttons" remove="true" display="false"/>
+
+        <referenceBlock name="checkout.cart" template="Magento_Checkout::cart/page.phtml">
+            <block class="Magento\Framework\View\Element\RendererList" name="checkout.cart.empty.item.renderers" as="renderer.list">
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.empty.item.renderers.default" as="default" template="Magento_Checkout::cart/item/default.phtml"/>
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.empty.item.renderers.simple" as="simple" template="Magento_Checkout::cart/item/default.phtml"/>
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.empty.item.renderers.configurable" as="configurable" template="Magento_Checkout::cart/item/default.phtml"/>
+            </block>
+        </referenceBlock>
+        <referenceBlock name="checkout.cart.form" template="Magento_Checkout::cart/form.phtml">
+            <block class="Magento\Framework\View\Element\RendererList" name="checkout.cart.form.empty.item.renderers" as="renderer.list">
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.form.empty.item.renderers.default" as="default" template="Magento_Checkout::cart/item/default.phtml"/>
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.form.empty.item.renderers.simple" as="simple" template="Magento_Checkout::cart/item/default.phtml"/>
+                <block class="Magento\Checkout\Block\Cart\Item\Renderer" name="checkout.cart.form.empty.item.renderers.configurable" as="configurable" template="Magento_Checkout::cart/item/default.phtml"/>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
+

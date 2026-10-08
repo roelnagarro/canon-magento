@@ -2,23 +2,11 @@
 /** @var $block \Magento\Catalog\Block\Product\View */
 ?>
 <?php $_product = $block->getProduct(); ?>
-<?php $buttonTitle = __('Add To Cart'); ?>
+<?php $buttonTitle = __('Add to Order'); ?>
 <?php if ($_product->isSaleable()) :?>
 <div class="box-tocart">
     <div class="fieldset">
-        <div class="product-options-wrapper custom-size-swatches">
-            <div class="swatch-attribute size">
-                <span class="swatch-attribute-label"><?= $block->escapeHtml(__('Available Sizes')) ?></span>
-                <div class="swatch-attribute-options clearfix">
-                    <div class="swatch-option text disabled" data-size="Small"><?= $block->escapeHtml(__('Small')) ?></div>
-                    <div class="swatch-option text" data-size="Medium"><?= $block->escapeHtml(__('Medium')) ?></div>
-                    <div class="swatch-option text" data-size="Large"><?= $block->escapeHtml(__('Large')) ?></div>
-                    <div class="swatch-option text selected" data-size="XLarge"><?= $block->escapeHtml(__('XLarge')) ?></div>
-                    <div class="swatch-option text" data-size="2XLarge"><?= $block->escapeHtml(__('2XLarge')) ?></div>
-                    <div class="swatch-option text" data-size="3XLarge"><?= $block->escapeHtml(__('3XLarge')) ?></div>
-                </div>
-            </div>
-        </div>
+
 
         <?php if ($block->shouldRenderQuantity()) :?>
         <div class="field qty">
@@ -79,10 +67,55 @@ require(['jquery'], function($) {
             $qty.val(val + 1).trigger('change');
         });
 
-        $(document).on('click', '.custom-size-swatches .swatch-option.text:not(.disabled)', function(e) {
-            e.preventDefault();
-            $('.custom-size-swatches .swatch-option.text').removeClass('selected');
-            $(this).addClass('selected');
+        function ensureOptionSelected() {
+            var $radios = $('input[type="radio"][name^="options["]');
+            if ($radios.length) {
+                var checked = $radios.filter(':checked');
+                if (!checked.length) {
+                    var $first = $radios.first();
+                    $first.prop('checked', true).trigger('change');
+                    var valId = $first.val();
+                    var optMatch = $first.attr('name').match(/options\[(\d+)\]/);
+                    var optId = optMatch ? optMatch[1] : '';
+                    if (optId && valId) {
+                        $('[data-option-id="' + optId + '"][data-option-type-id="' + valId + '"]').addClass('selected');
+                    }
+                }
+            }
+        }
+
+        // Auto-select first option on page ready if none checked
+        ensureOptionSelected();
+
+        $(document).on('click', '.swatch-option:not(.disabled), .custom-size-swatches .swatch-option:not(.disabled), [data-option-type-id]', function(e) {
+            var $this = $(this);
+            var optionId = $this.data('option-id') || $this.attr('data-option-id');
+            var valueId = $this.data('option-type-id') || $this.attr('data-option-type-id');
+
+            $this.closest('.swatch-attribute, .custom-size-swatches, .control, .fieldset').find('.swatch-option').removeClass('selected');
+            $this.addClass('selected');
+
+            if (optionId && valueId) {
+                var $radio = $('#options_' + optionId + '_' + valueId);
+                if (!$radio.length) {
+                    $radio = $('input[name="options[' + optionId + ']"][value="' + valueId + '"]');
+                }
+                if ($radio.length) {
+                    $radio.prop('checked', true).trigger('change');
+                }
+                var $select = $('select[name="options[' + optionId + ']"]');
+                if ($select.length) {
+                    $select.val(valueId).trigger('change');
+                }
+                var $superSelect = $('select[name="super_attribute[' + optionId + ']"]');
+                if ($superSelect.length) {
+                    $superSelect.val(valueId).trigger('change');
+                }
+            }
+        });
+
+        $(document).on('click', '#product-addtocart-button', function() {
+            ensureOptionSelected();
         });
     });
 });

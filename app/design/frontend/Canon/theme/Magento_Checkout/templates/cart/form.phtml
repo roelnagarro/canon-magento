@@ -1,0 +1,129 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart\Grid */
+$items = [];
+$quote = $block->getQuote();
+if ($quote && $quote->hasItems()) {
+    $items = $quote->getAllVisibleItems();
+}
+if (empty($items)) {
+    $items = $block->getItems() ?: [];
+}
+?>
+<form action="<?= $block->escapeUrl($block->getUrl('checkout/cart/updatePost')) ?>"
+      method="post"
+      id="form-validate"
+      data-mage-init='{"Magento_Checkout/js/action/update-shopping-cart": {"validationURL" : "<?= $block->escapeUrl($block->getUrl('checkout/cart/updateItemQty')) ?>"}}'
+      class="form form-cart"
+      style="width: 100% !important; float: none !important; clear: none !important; margin: 0 !important; padding: 0 !important;">
+    <?= $block->getBlockHtml('formkey') ?>
+    <div class="cart-items-wrapper" style="width: 100% !important; float: none !important; clear: none !important; display: flex !important; flex-direction: column !important; gap: 20px !important;">
+        <?php if (!empty($items)) : ?>
+            <?php foreach ($items as $_item) : ?>
+                <?php
+                $itemHtml = '';
+                try {
+                    $itemHtml = $block->getItemHtml($_item);
+                } catch (\Exception $e) {
+                    $itemHtml = '';
+                }
+                ?>
+                <?php if (!empty(trim($itemHtml))) : ?>
+                    <?= $itemHtml ?>
+                <?php else : ?>
+                    <?php
+                    $product = $_item->getProduct();
+                    $productName = $_item->getName() ?: ($product ? $product->getName() : __('Product'));
+                    $sku = $_item->getSku();
+                    $qty = (int)$_item->getQty();
+                    $price = $_item->getPrice() ? sprintf('$%.2f', $_item->getPrice()) : '$0.00';
+                    $imagePath = $product ? ($product->getImage() ?: $product->getThumbnail() ?: $product->getSmallImage()) : '';
+                    if ($imagePath && $imagePath !== 'no_selection') {
+                        $imgUrl = '/media/catalog/product/' . ltrim($imagePath, '/');
+                    } else {
+                        $imgUrl = '/media/catalog/product/o/g/ogio_polo.png';
+                    }
+                    ?>
+                    <div class="cart-item-card" style="background: #ffffff !important; border: 1px solid #e5e7eb !important; border-radius: 14px !important; padding: 20px 24px !important; display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; gap: 24px !important; box-sizing: border-box !important; width: 100% !important;">
+                        <div class="cart-item-image-wrapper" style="width: 120px !important; height: 120px !important; background-color: #f4f4f5 !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; padding: 10px !important; box-sizing: border-box !important;">
+                            <img src="<?= $block->escapeUrl($imgUrl) ?>" alt="<?= $block->escapeHtmlAttr($productName) ?>" style="max-height: 96px !important; max-width: 96px !important; object-fit: contain !important; display: block !important;" />
+                        </div>
+                        <div class="cart-item-details" style="flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 6px !important; justify-content: center !important;">
+                            <h3 class="product-name" style="font-size: 16px !important; font-weight: 700 !important; color: #111827 !important; text-transform: uppercase !important; margin: 0 !important; font-family: inherit !important;"><?= $block->escapeHtml($productName) ?></h3>
+                            <?php if ($sku) : ?>
+                                <div class="product-sku" style="font-size: 13px !important; color: #71717a !important; margin: 0 !important;"><span>Product ID: <?= $block->escapeHtml($sku) ?></span></div>
+                            <?php endif; ?>
+                            <div class="product-attribute-pills" style="display: flex !important; flex-direction: row !important; gap: 8px !important; margin: 4px 0 !important; align-items: center !important;">
+                                <span class="pill" style="background-color: #eef0f2 !important; color: #52525b !important; border-radius: 12px !important; padding: 4px 12px !important; font-size: 12px !important; font-weight: 600 !important; display: inline-block !important;"><?= $block->escapeHtml(__('QTY:')) ?> <?= $qty ?></span>
+                            </div>
+                            <div class="product-price-wrapper" style="margin: 2px 0 !important;"><span class="price" style="font-size: 22px !important; font-weight: 800 !important; color: #111827 !important;"><?= $block->escapeHtml($price) ?></span></div>
+                        </div>
+                        <div class="cart-item-actions" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 20px !important; flex-shrink: 0 !important; margin-left: auto !important; width: auto !important;">
+                            <div class="field qty" style="margin: 0 !important; display: inline-block !important;">
+                                <div class="control qty-stepper" style="display: inline-flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; border: 1px solid #d4d4d8 !important; border-radius: 20px !important; padding: 2px 6px !important; background: #ffffff !important; height: 36px !important; box-sizing: border-box !important;">
+                                    <button type="button" class="qty-btn cart-qty-minus" data-cart-item-id="<?= $_item->getId() ?>" aria-label="Decrease quantity" style="width: 26px !important; height: 26px !important; min-width: 26px !important; border-radius: 50% !important; border: 1px solid #a1a1aa !important; background: #ffffff !important; color: #3f3f46 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    </button>
+                                    <input id="cart-<?= $block->escapeHtmlAttr($_item->getId()) ?>-qty"
+                                           name="cart[<?= $block->escapeHtmlAttr($_item->getId()) ?>][qty]"
+                                           value="<?= $qty ?>"
+                                           type="number"
+                                           min="1"
+                                           class="input-text qty"
+                                           style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 28px !important; border: none !important; background: transparent !important; text-align: center !important; font-size: 14px !important; font-weight: 700 !important; color: #18181b !important; padding: 0 !important; margin: 0 4px !important; box-shadow: none !important; outline: none !important; display: inline-block !important;" />
+                                    <button type="button" class="qty-btn cart-qty-plus" data-cart-item-id="<?= $_item->getId() ?>" aria-label="Increase quantity" style="width: 26px !important; height: 26px !important; min-width: 26px !important; border-radius: 50% !important; border: 1px solid #a1a1aa !important; background: #ffffff !important; color: #3f3f46 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach ?>
+        <?php endif; ?>
+    </div>
+</form>
+
+<script>
+require(['jquery'], function($) {
+    $(document).ready(function() {
+        $(document).on('click', '.cart-qty-minus', function(e) {
+            e.preventDefault();
+            var $qtyInput = $(this).siblings('.input-text.qty');
+            var val = parseInt($qtyInput.val()) || 1;
+            if (val > 1) {
+                $qtyInput.val(val - 1).trigger('change');
+                $('#form-validate').submit();
+            }
+        });
+        $(document).on('click', '.cart-qty-plus', function(e) {
+            e.preventDefault();
+            var $qtyInput = $(this).siblings('.input-text.qty');
+            var val = parseInt($qtyInput.val()) || 1;
+            $qtyInput.val(val + 1).trigger('change');
+            $('#form-validate').submit();
+        });
+
+        /* Stepper buttons for interactive demo */
+        $(document).on('click', '.demo-qty-minus', function(e) {
+            e.preventDefault();
+            var $qtyInput = $(this).siblings('.demo-qty-input');
+            var val = parseInt($qtyInput.val()) || 1;
+            if (val > 1) {
+                $qtyInput.val(val - 1);
+            }
+        });
+        $(document).on('click', '.demo-qty-plus', function(e) {
+            e.preventDefault();
+            var $qtyInput = $(this).siblings('.demo-qty-input');
+            var val = parseInt($qtyInput.val()) || 1;
+            $qtyInput.val(val + 1);
+        });
+        $(document).on('click', '.demo-item-remove', function(e) {
+            e.preventDefault();
+            $(this).closest('.cart-item-card').fadeOut(200, function() {
+                $(this).remove();
+            });
+        });
+    });
+});
+</script>

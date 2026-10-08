@@ -1,0 +1,62 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart\Summary */
+$totals = [];
+try {
+    $totals = $block->getTotals() ?: [];
+} catch (\Exception $e) {
+    $totals = [];
+}
+$quote = $block->getQuote();
+$items = [];
+if ($quote && $quote->hasItems()) {
+    $items = $quote->getAllVisibleItems();
+}
+$itemQty = 0;
+$subtotalVal = 0.00;
+
+if (!empty($items)) {
+    foreach ($items as $it) {
+        $itemQty += (int)$it->getQty();
+        $subtotalVal += (float)($it->getRowTotal() ?: ($it->getPrice() * $it->getQty()));
+    }
+}
+if ($subtotalVal <= 0 && isset($totals['subtotal']) && $totals['subtotal']->getValue() > 0) {
+    $subtotalVal = (float)$totals['subtotal']->getValue();
+}
+$grandTotalVal = $subtotalVal;
+if (isset($totals['grand_total']) && $totals['grand_total']->getValue() > 0) {
+    $grandTotalVal = (float)$totals['grand_total']->getValue();
+}
+$taxVal = isset($totals['tax']) ? (float)$totals['tax']->getValue() : 0.00;
+$itemCountDisplay = $itemQty;
+?>
+<div class="cart-summary-card" style="background-color: #f4f4f5 !important; border-radius: 14px !important; padding: 24px 28px !important; width: 100% !important; float: none !important; clear: none !important; box-sizing: border-box !important;">
+    <h2 class="summary-title" style="font-size: 20px !important; font-weight: 800 !important; color: #111827 !important; margin: 0 0 20px 0 !important; display: block !important; font-family: inherit !important;"><?= $block->escapeHtml(__('Order Summary')) ?></h2>
+    <div class="cart-summary-rows" style="display: flex !important; flex-direction: column !important; gap: 12px !important; margin-bottom: 24px !important;">
+        <div class="summary-row" style="display: flex !important; justify-content: space-between !important; align-items: center !important; font-size: 14px !important;">
+            <span class="label" style="color: #52525b !important; font-weight: 400 !important;"><?= $block->escapeHtml(__('Subtotal (%1 Items)', $itemCountDisplay)) ?></span>
+            <span class="value" style="color: #111827 !important; font-weight: 600 !important; text-align: right !important;"><?= $block->escapeHtml(sprintf('$%.2f', $subtotalVal)) ?></span>
+        </div>
+        <div class="summary-row" style="display: flex !important; justify-content: space-between !important; align-items: center !important; font-size: 14px !important;">
+            <span class="label" style="color: #52525b !important; font-weight: 400 !important;"><?= $block->escapeHtml(__('Shipping')) ?></span>
+            <span class="value shipping-free" style="color: #52525b !important; font-weight: 600 !important; text-transform: uppercase !important; text-align: right !important;"><?= $block->escapeHtml(__('FREE')) ?></span>
+        </div>
+        <div class="summary-row" style="display: flex !important; justify-content: space-between !important; align-items: center !important; font-size: 14px !important;">
+            <span class="label" style="color: #52525b !important; font-weight: 400 !important;"><?= $block->escapeHtml(__('Estimated Tax')) ?></span>
+            <span class="value" style="color: #111827 !important; font-weight: 600 !important; text-align: right !important;"><?= $block->escapeHtml(sprintf('$%.2f', $taxVal)) ?></span>
+        </div>
+        <div class="summary-divider" style="height: 1px !important; background-color: #e4e4e7 !important; margin: 4px 0 !important;"></div>
+        <div class="summary-row grand-total-row" style="display: flex !important; justify-content: space-between !important; align-items: center !important; font-size: 14px !important; padding-top: 6px !important;">
+            <span class="label" style="font-size: 16px !important; font-weight: 700 !important; color: #111827 !important;"><?= $block->escapeHtml(__('Total')) ?></span>
+            <span class="value grand-total-price" style="font-size: 20px !important; font-weight: 800 !important; color: #111827 !important; text-align: right !important;"><?= $block->escapeHtml(sprintf('$%.2f', $grandTotalVal)) ?></span>
+        </div>
+    </div>
+    <div class="cart-summary-actions" style="display: flex !important; flex-direction: column !important; gap: 12px !important; margin: 0 !important; padding: 0 !important;">
+        <a href="<?= $block->escapeUrl($block->getUrl('checkout')) ?>" class="toyota-checkout-btn-red" style="background-color: #d32f2f !important; background: #d32f2f !important; color: #ffffff !important; border-radius: 8px !important; padding: 14px 20px !important; font-size: 15px !important; font-weight: 700 !important; display: block !important; width: 100% !important; text-align: center !important; text-decoration: none !important; box-sizing: border-box !important; border: none !important;" title="<?= $block->escapeHtmlAttr(__('Proceed to Checkout')) ?>">
+            <span><?= $block->escapeHtml(__('Proceed to Checkout')) ?></span>
+        </a>
+        <a href="<?= $block->escapeUrl($block->getUrl('')) ?>" class="toyota-continue-shopping-btn" style="background-color: #ffffff !important; background: #ffffff !important; border: 1px solid #d4d4d8 !important; color: #3f3f46 !important; border-radius: 8px !important; padding: 14px 20px !important; font-size: 15px !important; font-weight: 700 !important; display: block !important; width: 100% !important; text-align: center !important; text-decoration: none !important; box-sizing: border-box !important;" title="<?= $block->escapeHtmlAttr(__('Continue Shopping')) ?>">
+            <span><?= $block->escapeHtml(__('Continue Shopping')) ?></span>
+        </a>
+    </div>
+</div>

@@ -14,5 +14,8 @@
         <referenceBlock name="breadcrumbs" remove="true"/>
         <referenceBlock name="customer.new" remove="true"/>
         <referenceBlock name="customer_form_login" template="Magento_Customer::form/login.phtml"/>
+        <referenceContainer name="page.wrapper">
+            <block class="Magento\Framework\View\Element\Template" name="toyota.dots.pattern" template="Magento_Customer::dots_pattern.phtml" after="page.content" before="toyota.footer"/>
+        </referenceContainer>
     </body>
 </page>

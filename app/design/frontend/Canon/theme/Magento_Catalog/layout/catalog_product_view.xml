@@ -13,6 +13,9 @@
         <!-- Hide review summary & detailed tabs -->
         <referenceBlock name="product.info.review" remove="true"/>
         <referenceBlock name="product.info.details" remove="true"/>
+        <referenceBlock name="breadcrumbs" remove="true"/>
+        <referenceBlock name="addtocart.shortcut.buttons" remove="true"/>
+        <referenceBlock name="addtocart.shortcut.buttons.additional" remove="true"/>
 
         <referenceContainer name="content">
             <block class="Magento\Framework\View\Element\Template" name="product.info.back" template="Magento_Catalog::product/view/back.phtml" before="-"/>
