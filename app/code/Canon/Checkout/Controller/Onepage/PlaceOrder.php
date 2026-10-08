@@ -49,8 +49,17 @@ class PlaceOrder implements HttpPostActionInterface, CsrfAwareActionInterface
 
     public function execute()
     {
+        $logger = \Magento\Framework\App\ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
+        $logger->info('Canon PlaceOrder hit', [
+            'method' => $this->context->getRequest()->getMethod(),
+            'session_id' => session_id(),
+        ]);
         $resultJson = $this->resultJsonFactory->create();
         $quote = $this->checkoutSession->getQuote();
+        $logger->info('Canon PlaceOrder quote', [
+            'quote_id' => $quote ? $quote->getId() : null,
+            'items' => $quote ? (int)$quote->getItemsCount() : 0,
+        ]);
 
         if (!$quote || !$quote->hasItems()) {
             try {
@@ -201,6 +210,7 @@ class PlaceOrder implements HttpPostActionInterface, CsrfAwareActionInterface
             $quote->save();
 
             $orderId = $this->quoteManagement->placeOrder($quote->getId());
+            $logger->info('Canon PlaceOrder placed', ['order_id' => $orderId]);
 
             if ($orderId) {
                 $order = $this->orderFactory->create()->load($orderId);
