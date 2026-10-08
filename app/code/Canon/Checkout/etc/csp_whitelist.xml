@@ -9,6 +9,7 @@
     <policies>
         <policy id="script-src">
             <values>
+                <value id="unsafe-inline-scripts" type="host">'unsafe-inline'</value>
                 <value id="checkout-inline-script-1" type="hash" algorithm="sha256">51MoHTcYrsPA3vOV+qsm+0fNpyNG8tqYgK6E+l9Z2SE=</value>
                 <value id="checkout-inline-script-2" type="hash" algorithm="sha256">uz8lP4a3ZCnWjPWYcTSfgLfrI04nov+udSxrocZgskw=</value>
                 <value id="checkout-inline-script-3" type="hash" algorithm="sha256">O1oO1NL6XhskUktQcgHNb+uioKZSS5fePcHU3rZ3/80=</value>
@@ -18,6 +19,7 @@
                 <value id="checkout-inline-script-7" type="hash" algorithm="sha256">yq4tIpBfaQ+pxupzn/VVcMYVlKTsbJut7DgQjZWjMYc=</value>
                 <value id="checkout-inline-script-8" type="hash" algorithm="sha256">Zui9Qq42hZMwTqzJa0IkAERTfKxtQLi5t6GhG9Dsoak=</value>
                 <value id="checkout-inline-script-9" type="hash" algorithm="sha256">wW6pf57EHxUw6tsRkgAJO4zCAvKiC5DIV4hdbSAUqU4=</value>
+                <value id="checkout-inline-script-10" type="hash" algorithm="sha256">tEgfp5kcgk78I0iAjeJ+Kkciw5mjfMcTQreazlyQX6Q=</value>
             </values>
         </policy>
     </policies>
