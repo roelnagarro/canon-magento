@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CSP Whitelist configuration for Canon Checkout
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="checkout-inline-script-1" type="hash" algorithm="sha256">51MoHTcYrsPA3vOV+qsm+0fNpyNG8tqYgK6E+l9Z2SE=</value>
+                <value id="checkout-inline-script-2" type="hash" algorithm="sha256">uz8lP4a3ZCnWjPWYcTSfgLfrI04nov+udSxrocZgskw=</value>
+                <value id="checkout-inline-script-3" type="hash" algorithm="sha256">O1oO1NL6XhskUktQcgHNb+uioKZSS5fePcHU3rZ3/80=</value>
+                <value id="checkout-inline-script-4" type="hash" algorithm="sha256">ckcuC+dqx5cHIh9ATdCkr+FbEXRRHx0ZjP95PjvmYYo=</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
