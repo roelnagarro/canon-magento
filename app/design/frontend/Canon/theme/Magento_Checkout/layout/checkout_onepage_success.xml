@@ -9,7 +9,7 @@
         <title>Order Confirmation</title>
     </head>
     <body>
-        <referenceBlock name="page.main.title" remove="true" display="false"/>
+        <referenceBlock name="page.main.title" remove="true"/>
         <referenceContainer name="content">
             <block class="Magento\Checkout\Block\Onepage\Success" name="checkout.success" template="Magento_Checkout::success.phtml" cacheable="false">
                 <container name="order.success.additional.info" label="Order Success Additional Info"/>
