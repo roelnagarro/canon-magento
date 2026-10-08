@@ -223,5 +223,9 @@ $scriptString = <<<JS
     });
 })();
 JS;
+if (isset($secureRenderer) && $secureRenderer) {
+    echo $secureRenderer->renderTag('script', [], $scriptString, false);
+} else {
+    echo '<script>' . $scriptString . '</script>';
+}
 ?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
