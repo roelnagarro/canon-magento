@@ -207,7 +207,8 @@ $email = trim(preg_replace('/\s+/', ' ', (string)$email));
     </div>
 </div>
 
-<script>
+<?php
+$scriptString = <<<JS
 (function() {
     var form = document.getElementById('send-order-form');
     if (!form) return;
@@ -221,4 +222,6 @@ $email = trim(preg_replace('/\s+/', ' ', (string)$email));
         }
     });
 })();
-</script>
+JS;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
