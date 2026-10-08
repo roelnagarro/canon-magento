@@ -134,12 +134,59 @@ class PlaceOrder implements HttpPostActionInterface, CsrfAwareActionInterface
 
             $shippingAddress = $quote->getShippingAddress();
             $shippingAddress->addData($addressData);
-            $shippingAddress->setCollectShippingRates(true)
-                            ->collectShippingRates()
-                            ->setShippingMethod('flatrate_flatrate');
+            $shippingAddress->setCollectShippingRates(true)->collectShippingRates();
 
-            $quote->setPaymentMethod('checkmo');
-            $quote->getPayment()->importData(['method' => 'checkmo']);
+            if (!$quote->isVirtual()) {
+                $shippingMethod = null;
+                $availableRates = [];
+                foreach ($shippingAddress->getGroupedAllShippingRates() as $carrierRates) {
+                    foreach ($carrierRates as $rate) {
+                        $availableRates[] = $rate->getCode();
+                    }
+                }
+                if (in_array('flatrate_flatrate', $availableRates, true)) {
+                    $shippingMethod = 'flatrate_flatrate';
+                } elseif (in_array('freeshipping_freeshipping', $availableRates, true)) {
+                    $shippingMethod = 'freeshipping_freeshipping';
+                } elseif (!empty($availableRates)) {
+                    $shippingMethod = $availableRates[0];
+                }
+                if (!$shippingMethod) {
+                    throw new \Magento\Framework\Exception\LocalizedException(
+                        __('No shipping method is available. Enable Flat Rate or Free Shipping in Stores > Configuration > Sales > Delivery Methods.')
+                    );
+                }
+                $shippingAddress->setShippingMethod($shippingMethod);
+            }
+
+            $quote->setTotalsCollectedFlag(false);
+            $quote->collectTotals();
+
+            $om = \Magento\Framework\App\ObjectManager::getInstance();
+            $paymentMethod = null;
+            $availableMethods = [];
+            foreach ($om->get(\Magento\Payment\Api\PaymentMethodListInterface::class)
+                         ->getActiveList((int)$quote->getStoreId()) as $method) {
+                $availableMethods[] = $method->getCode();
+            }
+            foreach (['checkmo', 'free', 'purchaseorder', 'cashondelivery', 'banktransfer'] as $preferred) {
+                if (in_array($preferred, $availableMethods, true)) {
+                    $paymentMethod = $preferred;
+                    break;
+                }
+            }
+            if (!$paymentMethod) {
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('No offline payment method is enabled. Enable Check / Money Order in Stores > Configuration > Sales > Payment Methods.')
+                );
+            }
+
+            $quote->setPaymentMethod($paymentMethod);
+            $paymentData = ['method' => $paymentMethod];
+            if ($paymentMethod === 'purchaseorder') {
+                $paymentData['po_number'] = 'WEB-' . $quote->getId();
+            }
+            $quote->getPayment()->importData($paymentData);
 
             $quote->setCustomerEmail($email);
             $quote->setCustomerFirstname($firstname);
@@ -177,6 +224,9 @@ class PlaceOrder implements HttpPostActionInterface, CsrfAwareActionInterface
                 }
             }
         } catch (\Exception $e) {
+            \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Psr\Log\LoggerInterface::class)
+                ->error('Canon PlaceOrder failed: ' . $e->getMessage(), ['exception' => $e]);
             $isAjax = $this->context->getRequest()->isXmlHttpRequest() || $this->context->getRequest()->getParam('is_ajax');
             if ($isAjax) {
                 return $resultJson->setData([
