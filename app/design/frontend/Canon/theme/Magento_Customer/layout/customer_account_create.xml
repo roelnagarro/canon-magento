@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Customer Account Create Layout Override
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Create New Customer Account</title>
+    </head>
+    <body>
+        <attribute name="class" value="customer-account-create-page"/>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="breadcrumbs" remove="true"/>
+        <referenceBlock name="customer_form_register" template="Magento_Customer::form/register.phtml"/>
+        <referenceContainer name="page.wrapper">
+            <block class="Magento\Framework\View\Element\Template" name="toyota.dots.pattern" template="Magento_Customer::dots_pattern.phtml" after="page.content" before="toyota.footer"/>
+        </referenceContainer>
+    </body>
+</page>

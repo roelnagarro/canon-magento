@@ -67,7 +67,7 @@ $buttonLockManager = $block->getData('button_lock_manager');
                     </a>
                     <a class="login-link-request"
                         href="<?= $escaper->escapeUrl($block->getUrl('customer/account/create/')) ?>">
-                        Request Access
+                        <?= $escaper->escapeHtml(__('Signup')) ?>
                     </a>
                 </div>
             </form>
