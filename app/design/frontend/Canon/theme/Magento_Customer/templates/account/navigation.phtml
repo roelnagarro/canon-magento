@@ -1,0 +1,44 @@
+<?php
+/**
+ * Rent a Toyota - Customer Account Sidebar Navigation
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+$actionName = $block->getRequest()->getFullActionName();
+?>
+<div class="cdg-account-sidebar-card">
+    <h2 class="cdg-sidebar-title"><?= $block->escapeHtml(__('My Account')) ?></h2>
+
+    <div class="cdg-nav-section">
+        <div class="cdg-nav-header"><?= $block->escapeHtml(__('ORDERS')) ?></div>
+        <ul class="cdg-nav-links">
+            <li class="cdg-nav-item <?= (strpos($actionName, 'sales_order') !== false) ? 'active' : '' ?>">
+                <a href="<?= $block->escapeUrl($block->getUrl('sales/order/history')) ?>">
+                    <?= $block->escapeHtml(__('My Orders')) ?>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="cdg-nav-divider"></div>
+
+    <div class="cdg-nav-section">
+        <div class="cdg-nav-header"><?= $block->escapeHtml(__('ACCOUNT')) ?></div>
+        <ul class="cdg-nav-links">
+            <li class="cdg-nav-item <?= (strpos($actionName, 'customer_address') !== false) ? 'active' : '' ?>">
+                <a href="<?= $block->escapeUrl($block->getUrl('customer/address')) ?>">
+                    <?= $block->escapeHtml(__('Address Book')) ?>
+                </a>
+            </li>
+            <li class="cdg-nav-item <?= ($actionName === 'customer_account_edit') ? 'active' : '' ?>">
+                <a href="<?= $block->escapeUrl($block->getUrl('customer/account/edit')) ?>">
+                    <?= $block->escapeHtml(__('Account Information')) ?>
+                </a>
+            </li>
+            <li class="cdg-nav-item <?= (strpos($actionName, 'vault') !== false) ? 'active' : '' ?>">
+                <a href="<?= $block->escapeUrl($block->getUrl('vault/cards/listaction')) ?>">
+                    <?= $block->escapeHtml(__('Stored Payment Methods')) ?>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

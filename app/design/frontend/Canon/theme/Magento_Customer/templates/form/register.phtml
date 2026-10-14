@@ -68,7 +68,7 @@ $formData = $block->getFormData();
                     </div>
                 </div>
 
-                <div class="register-checkboxes">
+                <div class="register-hidden-fields" style="display: none;">
                     <?php if ($block->isNewsletterEnabled()): ?>
                         <div class="field choice newsletter">
                             <input type="checkbox"
@@ -98,112 +98,137 @@ $formData = $block->getFormData();
                     <label class="label" for="email_address">
                         <span><?= $escaper->escapeHtml(__('Email')) ?></span>
                     </label>
-                    <div class="control input-icon-wrapper">
+                    <div class="control">
+                        <div class="input-icon-wrapper addon">
+                            <span class="field-icon">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 8.00173C6.2352 8.00173 4.8 6.56684 4.8 4.80242C4.8 3.038 6.2352 1.60311 8 1.60311C9.7648 1.60311 11.2 3.038 11.2 4.80242C11.2 6.56684 9.7648 8.00173 8 8.00173ZM11.0064 8.53999C11.5665 8.09131 12.0186 7.52248 12.329 6.87551C12.6395 6.22853 12.8005 5.52 12.8 4.80242C12.8006 3.99103 12.5954 3.19279 12.2036 2.48222C11.8118 1.77165 11.2462 1.17192 10.5596 0.739236C9.8731 0.306555 9.08806 0.0550133 8.27786 0.00804651C7.46765 -0.0389203 6.65877 0.120288 5.92681 0.470739C5.19485 0.821191 4.56372 1.35147 4.09241 2.01201C3.62109 2.67255 3.32498 3.44174 3.23176 4.24776C3.13855 5.05377 3.25126 5.87024 3.55938 6.62087C3.86749 7.37151 4.36095 8.03179 4.9936 8.53999C2.0664 9.63975 0 12.3568 0 16H1.6C1.6 12.0009 4.4712 9.60138 8 9.60138C11.5288 9.60138 14.4 12.0009 14.4 16H16C16 12.3568 13.9336 9.63975 11.0064 8.53999Z" fill="#58595B"/>
+                                </svg>
+                            </span>
+                            <input type="email"
+                                   name="email"
+                                   autocomplete="email"
+                                   id="email_address"
+                                   value="<?= $escaper->escapeHtmlAttr($formData->getEmail()) ?>"
+                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Enter email address')) ?>"
+                                   title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                                   class="input-text"
+                                   data-mage-init='{"mage/trim-input":{}}'
+                                   data-validate="{required:true, 'validate-email':true}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field password required">
+                    <label class="label" for="password">
+                        <span><?= $escaper->escapeHtml(__('Password')) ?></span>
+                    </label>
+                    <div class="control">
+                        <div class="input-icon-wrapper addon password-wrapper">
                         <span class="field-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
+                            <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.66667 6.22222V5.33333C2.66667 3.91885 3.22857 2.56229 4.22876 1.5621C5.22896 0.561903 6.58551 0 8 0C9.41449 0 10.771 0.561903 11.7712 1.5621C12.7714 2.56229 13.3333 3.91885 13.3333 5.33333V6.22222H15.1111C15.3469 6.22222 15.573 6.31587 15.7397 6.48257C15.9064 6.64927 16 6.87536 16 7.11111V17.7778C16 18.0135 15.9064 18.2396 15.7397 18.4063C15.573 18.573 15.3469 18.6667 15.1111 18.6667H0.888889C0.653141 18.6667 0.427048 18.573 0.260349 18.4063C0.0936505 18.2396 0 18.0135 0 17.7778V7.11111C0 6.87536 0.0936505 6.64927 0.260349 6.48257C0.427048 6.31587 0.653141 6.22222 0.888889 6.22222H2.66667ZM14.2222 8H1.77778V16.8889H14.2222V8ZM7.11111 13.0951C6.77221 12.8994 6.50736 12.5974 6.35761 12.2358C6.20786 11.8743 6.18159 11.4734 6.28288 11.0954C6.38416 10.7174 6.60734 10.3834 6.91781 10.1452C7.22827 9.90693 7.60866 9.77779 8 9.77778C8.39134 9.77779 8.77173 9.90693 9.08219 10.1452C9.39266 10.3834 9.61584 10.7174 9.71712 11.0954C9.81841 11.4734 9.79214 11.8743 9.64239 12.2358C9.49264 12.5974 9.22779 12.8994 8.88889 13.0951V15.1111H7.11111V13.0951ZM4.44444 6.22222H11.5556V5.33333C11.5556 4.39034 11.181 3.48597 10.5142 2.81918C9.84736 2.15238 8.94299 1.77778 8 1.77778C7.05701 1.77778 6.15264 2.15238 5.48584 2.81918C4.81905 3.48597 4.44444 4.39034 4.44444 5.33333V6.22222Z" fill="#58595B"/>
                             </svg>
                         </span>
-                        <input type="email"
-                               name="email"
-                               autocomplete="email"
-                               id="email_address"
-                               value="<?= $escaper->escapeHtmlAttr($formData->getEmail()) ?>"
-                               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter email address')) ?>"
-                               title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                               title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
                                class="input-text"
-                               data-mage-init='{"mage/trim-input":{}}'
-                               data-validate="{required:true, 'validate-email':true}">
-                    </div>
-                </div>
-
-                <div class="register-row-2col">
-                    <div class="field password required">
-                        <label class="label" for="password">
-                            <span><?= $escaper->escapeHtml(__('Password')) ?></span>
-                        </label>
-                        <div class="control input-icon-wrapper password-wrapper">
-                            <span class="field-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    <path d="M12 15v2" stroke="#374151" stroke-width="2"></path>
-                                </svg>
-                            </span>
-                            <input type="password"
-                                   name="password"
-                                   id="password"
-                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Create password')) ?>"
-                                   title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
-                                   class="input-text"
-                                   data-password-min-length="<?= $escaper->escapeHtmlAttr($block->getMinimumPasswordLength()) ?>"
-                                   data-password-min-character-sets="<?= $escaper->escapeHtmlAttr($block->getRequiredCharacterClassesNumber()) ?>"
-                                   data-validate="{required:true, 'validate-customer-password':true}"
-                                   autocomplete="off">
-                            <button type="button" class="btn-toggle-password" data-target="password" tabindex="-1" aria-label="Toggle password visibility">
-                                <svg class="icon-eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                                </svg>
-                                <svg class="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="field confirmation required">
-                        <label class="label" for="password-confirmation">
-                            <span><?= $escaper->escapeHtml(__('Confirm Password')) ?></span>
-                        </label>
-                        <div class="control input-icon-wrapper password-wrapper">
-                            <span class="field-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    <path d="M12 15v2" stroke="#374151" stroke-width="2"></path>
-                                </svg>
-                            </span>
-                            <input type="password"
-                                   name="password_confirmation"
-                                   title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
-                                   id="password-confirmation"
-                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Confirm password')) ?>"
-                                   class="input-text"
-                                   data-validate="{required:true, equalTo:'#password'}"
-                                   autocomplete="off">
-                            <button type="button" class="btn-toggle-password" data-target="password-confirmation" tabindex="-1" aria-label="Toggle password visibility">
-                                <svg class="icon-eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                                </svg>
-                                <svg class="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </button>
+                               data-password-min-length="<?= $escaper->escapeHtmlAttr($block->getMinimumPasswordLength()) ?>"
+                               data-password-min-character-sets="<?= $escaper->escapeHtmlAttr($block->getRequiredCharacterClassesNumber()) ?>"
+                               data-validate="{required:true, 'validate-customer-password':true}"
+                               autocomplete="new-password">
+                        <button type="button" class="btn-toggle-password" data-target="password" tabindex="-1" aria-label="Toggle password visibility">
+                            <svg class="icon-eye-off" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="icon-eye" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Password strength indicator container for Magento JS -->
-                <div id="password-strength-meter-container" data-role="password-strength-meter" aria-live="polite">
+                <div class="field confirmation required">
+                    <label class="label" for="password-confirmation">
+                        <span><?= $escaper->escapeHtml(__('Confirm Password')) ?></span>
+                    </label>
+                    <div class="control">
+                        <div class="input-icon-wrapper addon password-wrapper">
+                        <span class="field-icon">
+                            <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.66667 6.22222V5.33333C2.66667 3.91885 3.22857 2.56229 4.22876 1.5621C5.22896 0.561903 6.58551 0 8 0C9.41449 0 10.771 0.561903 11.7712 1.5621C12.7714 2.56229 13.3333 3.91885 13.3333 5.33333V6.22222H15.1111C15.3469 6.22222 15.573 6.31587 15.7397 6.48257C15.9064 6.64927 16 6.87536 16 7.11111V17.7778C16 18.0135 15.9064 18.2396 15.7397 18.4063C15.573 18.573 15.3469 18.6667 15.1111 18.6667H0.888889C0.653141 18.6667 0.427048 18.573 0.260349 18.4063C0.0936505 18.2396 0 18.0135 0 17.7778V7.11111C0 6.87536 0.0936505 6.64927 0.260349 6.48257C0.427048 6.31587 0.653141 6.22222 0.888889 6.22222H2.66667ZM14.2222 8H1.77778V16.8889H14.2222V8ZM7.11111 13.0951C6.77221 12.8994 6.50736 12.5974 6.35761 12.2358C6.20786 11.8743 6.18159 11.4734 6.28288 11.0954C6.38416 10.7174 6.60734 10.3834 6.91781 10.1452C7.22827 9.90693 7.60866 9.77779 8 9.77778C8.39134 9.77779 8.77173 9.90693 9.08219 10.1452C9.39266 10.3834 9.61584 10.7174 9.71712 11.0954C9.81841 11.4734 9.79214 11.8743 9.64239 12.2358C9.49264 12.5974 9.22779 12.8994 8.88889 13.0951V15.1111H7.11111V13.0951ZM4.44444 6.22222H11.5556V5.33333C11.5556 4.39034 11.181 3.48597 10.5142 2.81918C9.84736 2.15238 8.94299 1.77778 8 1.77778C7.05701 1.77778 6.15264 2.15238 5.48584 2.81918C4.81905 3.48597 4.44444 4.39034 4.44444 5.33333V6.22222Z" fill="#58595B"/>
+                            </svg>
+                        </span>
+                        <input type="password"
+                               name="password_confirmation"
+                               title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
+                               id="password-confirmation"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
+                               class="input-text"
+                               data-validate="{required:true, equalTo:'#password'}"
+                               autocomplete="new-password">
+                        <button type="button" class="btn-toggle-password" data-target="password-confirmation" tabindex="-1" aria-label="Toggle password visibility">
+                            <svg class="icon-eye-off" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="icon-eye" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Strength & Requirements Section -->
+                <div class="password-strength-section">
+                    <div class="password-strength-header">
+                        <span class="password-strength-title"><?= $escaper->escapeHtml(__('Password Strength:')) ?></span>
+                        <span id="password-strength-label" class="password-strength-label"><?= $escaper->escapeHtml(__('No Password')) ?></span>
+                    </div>
+
+                    <div class="password-strength-segments" data-strength="none">
+                        <div class="strength-segment segment-1">
+                            <span class="segment-dot"></span>
+                        </div>
+                        <div class="strength-segment segment-2"></div>
+                        <div class="strength-segment segment-3"></div>
+                    </div>
+
+                    <ul class="password-rules-list">
+                        <li class="rule-item rule-length" data-rule="length">
+                            <span class="rule-icon">&#10005;</span>
+                            <span class="rule-text"><?= $escaper->escapeHtml(__('At least 8 characters in length')) ?></span>
+                        </li>
+                        <li class="rule-item rule-lowercase" data-rule="lowercase">
+                            <span class="rule-icon">&#10005;</span>
+                            <span class="rule-text"><?= $escaper->escapeHtml(__('At least one small letter')) ?></span>
+                        </li>
+                        <li class="rule-item rule-uppercase" data-rule="uppercase">
+                            <span class="rule-icon">&#10005;</span>
+                            <span class="rule-text"><?= $escaper->escapeHtml(__('At least one capital letter')) ?></span>
+                        </li>
+                        <li class="rule-item rule-number-symbol" data-rule="number-symbol">
+                            <span class="rule-icon">&#10005;</span>
+                            <span class="rule-text"><?= $escaper->escapeHtml(__('At least one number or symbol')) ?></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="password-strength-meter-container" data-role="password-strength-meter" aria-live="polite" style="display:none;">
                     <div id="password-strength-meter" class="password-strength-meter">
                         <?= $escaper->escapeHtml(__('Password Strength')) ?>:
                         <span id="password-strength-meter-label" data-role="password-strength-meter-label">
                             <?= $escaper->escapeHtml(__('No Password')) ?>
                         </span>
                     </div>
-                </div>
-
-                <div class="field choice show-password-choice" data-bind="scope: 'showPassword'">
-                    <!-- ko template: getTemplate() --><!-- /ko -->
-                </div>
-
-                <div class="required-fields-notice">
-                    * <?= $escaper->escapeHtml(__('Required Fields')) ?>
                 </div>
             </div>
 
@@ -221,36 +246,23 @@ $formData = $block->getFormData();
                     <span><?= $escaper->escapeHtml(__('Create an Account')) ?></span>
                 </button>
             </div>
-
-            <!-- Already have an account footer -->
-            <div class="register-footer-links">
-                <span><?= $escaper->escapeHtml(__('Already have an account?')) ?></span>
-                <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account/login')) ?>" class="signin-link">
-                    <?= $escaper->escapeHtml(__('Sign In')) ?>
-                </a>
-            </div>
         </form>
+    </div>
+
+    <!-- Already have an account footer (outside card) -->
+    <div class="register-footer-links">
+        <span class="footer-prompt"><?= $escaper->escapeHtml(__('Already have an account?')) ?></span>
+        <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account/login')) ?>" class="signin-link">
+            <?= $escaper->escapeHtml(__('Sign In')) ?>
+        </a>
     </div>
 </div>
 
 <script type="text/x-magento-init">
     {
-        ".field.password": {
-            "passwordStrengthIndicator": {
-                "formSelector": "form.form-create-account"
-            }
-        },
         "*": {
             "Magento_Customer/js/block-submit-on-send": {
                 "formId": "form-validate"
-            },
-            "Magento_Ui/js/core/app": {
-                "components": {
-                    "showPassword": {
-                        "component": "Magento_Customer/js/show-password",
-                        "passwordSelector": "#password,#password-confirmation"
-                    }
-                }
             }
         }
     }
@@ -259,6 +271,7 @@ $formData = $block->getFormData();
 <script>
 require(['jquery'], function ($) {
     $(document).ready(function () {
+        // Toggle password visibility
         $('.btn-toggle-password').on('click', function () {
             var targetId = $(this).data('target');
             var $input = $('#' + targetId);
@@ -268,6 +281,90 @@ require(['jquery'], function ($) {
             $(this).find('.icon-eye-off').toggle(!isPassword);
             $(this).find('.icon-eye').toggle(isPassword);
         });
+
+        // Real-time password requirement checklist and strength indicator
+        var $pwd = $('#password');
+        var $label = $('#password-strength-label');
+        var $segments = $('.password-strength-segments');
+        var $ruleLength = $('.rule-item.rule-length');
+        var $ruleLower = $('.rule-item.rule-lowercase');
+        var $ruleUpper = $('.rule-item.rule-uppercase');
+        var $ruleNumSym = $('.rule-item.rule-number-symbol');
+
+        function updateRuleItem($elem, isMet) {
+            if (isMet) {
+                $elem.addClass('rule-met').removeClass('rule-unmet');
+                $elem.find('.rule-icon').text('✓');
+            } else {
+                $elem.addClass('rule-unmet').removeClass('rule-met');
+                $elem.find('.rule-icon').text('✕');
+            }
+        }
+
+        function evaluatePassword() {
+            var val = $pwd.val() || '';
+            if (val.length === 0) {
+                $label.text('No Password');
+                $segments.attr('data-strength', 'none');
+                updateRuleItem($ruleLength, false);
+                updateRuleItem($ruleLower, false);
+                updateRuleItem($ruleUpper, false);
+                updateRuleItem($ruleNumSym, false);
+                return;
+            }
+
+            var hasLength = val.length >= 8;
+            var hasLower = /[a-z]/.test(val);
+            var hasUpper = /[A-Z]/.test(val);
+            var hasNumOrSym = /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(val);
+
+            updateRuleItem($ruleLength, hasLength);
+            updateRuleItem($ruleLower, hasLower);
+            updateRuleItem($ruleUpper, hasUpper);
+            updateRuleItem($ruleNumSym, hasNumOrSym);
+
+            var score = 0;
+            if (hasLength) score++;
+            if (hasLower) score++;
+            if (hasUpper) score++;
+            if (hasNumOrSym) score++;
+
+            if (score <= 1) {
+                $label.text('Weak');
+                $segments.attr('data-strength', 'weak');
+            } else if (score >= 2 && score <= 3) {
+                $label.text('Medium');
+                $segments.attr('data-strength', 'medium');
+            } else {
+                $label.text('Strong');
+                $segments.attr('data-strength', 'strong');
+            }
+        }
+
+        $pwd.on('input keyup change paste', evaluatePassword);
+        evaluatePassword();
+
+        // Ensure errorPlacement neatly places validation error below input-icon-wrapper
+        var setupErrorPlacement = function () {
+            var v = $('#form-validate').data('validator');
+            if (v && !v._toyotaCustomPlacementAttached) {
+                v._toyotaCustomPlacementAttached = true;
+                var origPlacement = v.settings.errorPlacement;
+                v.settings.errorPlacement = function (error, element) {
+                    var $wrapper = element.closest('.input-icon-wrapper');
+                    if ($wrapper.length) {
+                        $wrapper.after(error);
+                    } else if (origPlacement) {
+                        origPlacement(error, element);
+                    } else {
+                        element.after(error);
+                    }
+                };
+            }
+        };
+        setupErrorPlacement();
+        setTimeout(setupErrorPlacement, 250);
+        setTimeout(setupErrorPlacement, 1000);
     });
 });
 </script>

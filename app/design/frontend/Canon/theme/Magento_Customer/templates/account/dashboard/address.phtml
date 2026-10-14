@@ -1,0 +1,86 @@
+<?php
+/**
+ * Customer Account Dashboard - Address Book Block
+ * @var \Magento\Customer\Block\Account\Dashboard\Address $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$customer = $block->getCustomer();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$currentCustomerAddress = $objectManager->get(\Magento\Customer\Helper\Session\CurrentCustomerAddress::class);
+
+$shippingAddress = null;
+try {
+    $shippingAddress = $currentCustomerAddress->getDefaultShippingAddress();
+} catch (\Exception $e) {
+    $shippingAddress = null;
+}
+
+$editUrl = $block->getPrimaryShippingAddressEditUrl() ?: $block->getUrl('customer/address/new');
+
+$username = '';
+if ($customer) {
+    $userAttr = $customer->getCustomAttribute('username');
+    if ($userAttr && $userAttr->getValue()) {
+        $username = $userAttr->getValue();
+    } else {
+        $username = substr((string)$customer->getFirstname(), 0, 1) . (string)$customer->getLastname();
+    }
+}
+?>
+<div class="block block-dashboard-addresses cdg-dashboard-card-section">
+    <div class="cdg-dashboard-header-row">
+        <h2 class="cdg-dashboard-heading"><?= $block->escapeHtml(__('Address Book')) ?></h2>
+        <a class="cdg-dashboard-edit-link" href="<?= $block->escapeUrl($editUrl) ?>" data-ui-id="default-shipping-edit-link">
+            <span><?= $block->escapeHtml(__('Edit Address')) ?></span>
+        </a>
+    </div>
+
+    <div class="cdg-dashboard-body">
+        <div class="cdg-dashboard-subheading uppercase"><?= $block->escapeHtml(__('DEFAULT SHIPPING ADDRESS')) ?></div>
+
+        <?php if ($shippingAddress): ?>
+            <?php
+                $street = $shippingAddress->getStreet();
+                $streetStr = is_array($street) ? implode(', ', array_filter($street)) : (string)$street;
+                $region = is_object($shippingAddress->getRegion()) ? $shippingAddress->getRegion()->getRegion() : $shippingAddress->getRegion();
+                $city = $shippingAddress->getCity();
+                $postcode = $shippingAddress->getPostcode();
+                $countryId = $shippingAddress->getCountryId();
+                $countryFactory = $objectManager->get(\Magento\Directory\Model\CountryFactory::class);
+                $country = $countryFactory->create()->loadByCode($countryId);
+                $countryName = $country ? $country->getName() : $countryId;
+
+                $addressLine2 = implode(', ', array_filter([$city, $region, $postcode, $countryName]));
+            ?>
+            <div class="cdg-address-details-grid">
+                <div class="cdg-detail-row">
+                    <span class="cdg-detail-label"><?= $block->escapeHtml(__('Name:')) ?></span>
+                    <span class="cdg-detail-value"><?= $block->escapeHtml($shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname()) ?></span>
+                </div>
+                <?php if ($username): ?>
+                    <div class="cdg-detail-row">
+                        <span class="cdg-detail-label"><?= $block->escapeHtml(__('Username:')) ?></span>
+                        <span class="cdg-detail-value"><?= $block->escapeHtml($username) ?></span>
+                    </div>
+                <?php endif; ?>
+                <div class="cdg-detail-row">
+                    <span class="cdg-detail-label"><?= $block->escapeHtml(__('Address:')) ?></span>
+                    <span class="cdg-detail-value cdg-detail-address">
+                        <?= $block->escapeHtml($streetStr) ?><br>
+                        <?= $block->escapeHtml($addressLine2) ?>
+                    </span>
+                </div>
+                <?php if ($shippingAddress->getTelephone()): ?>
+                    <div class="cdg-detail-row">
+                        <span class="cdg-detail-label"><?= $block->escapeHtml(__('Contact #:')) ?></span>
+                        <span class="cdg-detail-value"><?= $block->escapeHtml($shippingAddress->getTelephone()) ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <p class="cdg-no-address-notice">
+                <?= $block->escapeHtml(__('You have not set a default shipping address.')) ?>
+            </p>
+        <?php endif; ?>
+    </div>
+</div>

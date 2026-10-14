@@ -1,0 +1,79 @@
+<?php
+/**
+ * Customer Account Dashboard - Recent Orders Block
+ * @var \Magento\Sales\Block\Order\Recent $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$_orders = $block->getOrders();
+$count = count($_orders);
+?>
+<div class="block block-dashboard-orders cdg-dashboard-card-section">
+    <div class="cdg-dashboard-header-row">
+        <h2 class="cdg-dashboard-heading"><?= $block->escapeHtml(__('Recent Orders')) ?></h2>
+        <?php if ($count > 0): ?>
+            <a class="cdg-dashboard-view-all-link" href="<?= $block->escapeUrl($block->getUrl('sales/order/history')) ?>">
+                <span><?= $block->escapeHtml(__('View All')) ?></span>
+            </a>
+        <?php endif; ?>
+    </div>
+
+    <div class="cdg-dashboard-body">
+        <?= $block->getChildHtml() ?>
+        <?php if ($count > 0): ?>
+            <div class="cdg-orders-table-wrapper">
+                <table class="cdg-orders-table" id="my-orders-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-id"><?= $block->escapeHtml(__('Order #')) ?></th>
+                            <th scope="col" class="col-date"><?= $block->escapeHtml(__('Date')) ?></th>
+                            <th scope="col" class="col-shipping"><?= $block->escapeHtml(__('Ship To')) ?></th>
+                            <th scope="col" class="col-total"><?= $block->escapeHtml(__('Order Total')) ?></th>
+                            <th scope="col" class="col-status"><?= $block->escapeHtml(__('Status')) ?></th>
+                            <th scope="col" class="col-actions"><?= $block->escapeHtml(__('Action')) ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($_orders as $_order): ?>
+                            <tr>
+                                <td class="col-id" data-th="<?= $block->escapeHtmlAttr(__('Order #')) ?>">
+                                    <?= $block->escapeHtml($_order->getRealOrderId()) ?>
+                                </td>
+                                <td class="col-date" data-th="<?= $block->escapeHtmlAttr(__('Date')) ?>">
+                                    <?= $block->escapeHtml(date('n/j/y', strtotime((string)$_order->getCreatedAt()))) ?>
+                                </td>
+                                <td class="col-shipping" data-th="<?= $block->escapeHtmlAttr(__('Ship To')) ?>">
+                                    <strong><?= $_order->getShippingAddress() ? $block->escapeHtml($_order->getShippingAddress()->getName()) : '&mdash;' ?></strong>
+                                </td>
+                                <td class="col-total" data-th="<?= $block->escapeHtmlAttr(__('Order Total')) ?>">
+                                    <?= /* @noEscape */ $_order->formatPrice($_order->getGrandTotal()) ?>
+                                </td>
+                                <td class="col-status" data-th="<?= $block->escapeHtmlAttr(__('Status')) ?>">
+                                    <?= $block->escapeHtml($_order->getStatusLabel()) ?>
+                                </td>
+                                <td class="col-actions" data-th="<?= $block->escapeHtmlAttr(__('Action')) ?>">
+                                    <div class="cdg-actions-group">
+                                        <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" class="cdg-table-action-link view">
+                                            <span><?= $block->escapeHtml(__('View Order')) ?></span>
+                                        </a>
+                                        <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($_order->getEntityId())): ?>
+                                            <a href="#" data-post='<?= /* @noEscape */
+                                                $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)
+                                                    ->getPostData($block->getReorderUrl($_order))
+                                            ?>' class="cdg-table-action-link reorder">
+                                                <span><?= $block->escapeHtml(__('Reorder')) ?></span>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <p class="cdg-no-orders-notice">
+                <?= $block->escapeHtml(__('You have placed no orders.')) ?>
+            </p>
+        <?php endif; ?>
+    </div>
+</div>

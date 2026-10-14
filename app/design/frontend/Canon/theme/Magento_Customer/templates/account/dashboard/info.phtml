@@ -1,0 +1,24 @@
+<?php
+/**
+ * Customer Account Dashboard - Account Information Block
+ * @var \Magento\Customer\Block\Account\Dashboard\Info $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="block block-dashboard-info cdg-dashboard-card-section">
+    <div class="cdg-dashboard-header-row">
+        <h2 class="cdg-dashboard-heading"><?= $block->escapeHtml(__('Account Information')) ?></h2>
+        <a class="cdg-dashboard-edit-link" href="<?= $block->escapeUrl($block->getUrl('customer/account/edit')) ?>">
+            <span><?= $block->escapeHtml(__('Edit')) ?></span>
+        </a>
+    </div>
+    <div class="cdg-dashboard-body">
+        <div class="cdg-dashboard-subheading"><?= $block->escapeHtml(__('Contact Information')) ?></div>
+        <div class="cdg-contact-info-line">
+            <strong class="cdg-contact-name"><?= $block->escapeHtml($block->getName()) ?></strong>
+            <span class="cdg-contact-dot">&middot;</span>
+            <span class="cdg-contact-email"><?= $block->escapeHtml($block->getCustomer()->getEmail()) ?></span>
+        </div>
+        <?= $block->getChildHtml('customer.account.dashboard.info.extra') ?>
+    </div>
+</div>
