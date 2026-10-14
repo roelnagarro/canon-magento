@@ -121,6 +121,7 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
             </div>
         </div>
     </div>
+    <?php if ($actionName !== 'customer_account_login'): ?>
     <div class="toyota-search-bar-container">
         <form class="search-form" id="search_mini_form" action="<?= $block->getUrl('catalogsearch/result/') ?>" method="get">
             <div class="search-input-wrapper">
@@ -177,6 +178,7 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
             </a>
         </div>
     </div>
+    <?php endif; ?>
 </header>
 <script>
 require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
