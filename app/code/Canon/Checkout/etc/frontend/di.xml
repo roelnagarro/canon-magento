@@ -6,4 +6,19 @@
     <type name="Magento\Framework\App\FrontControllerInterface">
         <plugin name="canon_checkout_force_login" type="Canon\Checkout\Plugin\ForceLoginPlugin" sortOrder="-10" />
     </type>
+    <type name="Magento\Customer\Model\Account\Redirect">
+        <plugin name="canon_customer_account_redirect_homepage" type="Canon\Checkout\Plugin\CustomerRedirectHomepagePlugin" sortOrder="10" />
+    </type>
+    <type name="Magento\Customer\Controller\Account\Login">
+        <plugin name="canon_customer_login_redirect_homepage" type="Canon\Checkout\Plugin\CustomerRedirectHomepagePlugin" sortOrder="10" />
+    </type>
+    <type name="Magento\Customer\Controller\Account\LoginPost">
+        <plugin name="canon_customer_loginpost_redirect_homepage" type="Canon\Checkout\Plugin\CustomerRedirectHomepagePlugin" sortOrder="10" />
+    </type>
+    <type name="Magento\Customer\Controller\Account\Create">
+        <plugin name="canon_customer_create_redirect_homepage" type="Canon\Checkout\Plugin\CustomerRedirectHomepagePlugin" sortOrder="10" />
+    </type>
+    <type name="Magento\Customer\Controller\Account\CreatePost">
+        <plugin name="canon_customer_createpost_redirect_homepage" type="Canon\Checkout\Plugin\CustomerRedirectHomepagePlugin" sortOrder="10" />
+    </type>
 </config>
