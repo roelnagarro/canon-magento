@@ -21,11 +21,36 @@ $isLoggedIn = (bool)$httpContext->getValue(\Magento\Customer\Model\Context::CONT
     || $customerSession->isLoggedIn()
     || (bool)$customerSession->getCustomerId()
     || (bool)$customerSession->getLoggedAsCustomerAdminId();
+
+if (!$isLoggedIn) {
+    try {
+        $currentCustomerHelper = $objectManager->get(\Magento\Customer\Helper\Session\CurrentCustomer::class);
+        if ($currentCustomerHelper->getCustomerId()) {
+            $isLoggedIn = true;
+        }
+    } catch (\Exception $e) {
+        // Ignore exception
+    }
+}
+
 $profileUrl = $isLoggedIn ? $block->getUrl('customer/account') : $block->getUrl('customer/account/login');
-$customerName = ($isLoggedIn && $customerSession->getCustomer() && $customerSession->getCustomer()->getName())
-    ? $customerSession->getCustomer()->getName()
-    : 'Scot Francis';
-if (empty(trim((string)$customerName))) {
+
+$customerName = '';
+if ($isLoggedIn) {
+    try {
+        if ($customerSession->getCustomer() && $customerSession->getCustomer()->getName()) {
+            $customerName = trim((string)$customerSession->getCustomer()->getName());
+        }
+        if (empty($customerName) && $customerSession->getCustomerId()) {
+            $customerRepository = $objectManager->get(\Magento\Customer\Api\CustomerRepositoryInterface::class);
+            $customerRecord = $customerRepository->getById((int)$customerSession->getCustomerId());
+            $customerName = trim($customerRecord->getFirstname() . ' ' . $customerRecord->getLastname());
+        }
+    } catch (\Exception $e) {
+        // Fallback
+    }
+}
+if (empty($customerName)) {
     $customerName = 'Scot Francis';
 }
 
@@ -50,8 +75,10 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
             </div>
         </div>
 
-        <?php if ($isLoggedIn): ?>
-        <a href="<?= $block->escapeUrl($profileUrl) ?>" class="toyota-user-profile" title="<?= __('User Profile') ?>">
+        <a href="<?= $block->escapeUrl($profileUrl) ?>"
+           class="toyota-user-profile"
+           title="<?= $block->escapeHtmlAttr(__('User Profile')) ?>"
+           style="<?= $isLoggedIn ? 'display: flex;' : 'display: none;' ?>">
             <div class="user-avatar">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="#6b7280">
                     <path
@@ -60,7 +87,7 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
             </div>
             <div class="user-info">
                 <div class="user-name">
-                    <?= $block->escapeHtml($customerName) ?>
+                    <span class="user-name-text"><?= $block->escapeHtml($customerName) ?></span>
                     <svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151">
                         <path d="M7 10l5 5 5-5z" />
                     </svg>
@@ -68,7 +95,6 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
                 <div class="user-store">Right Toyota</div>
             </div>
         </a>
-        <?php endif; ?>
     </div>
     <div class="toyota-search-bar-container">
         <form class="search-form" id="search_mini_form" action="<?= $block->getUrl('catalogsearch/result/') ?>" method="get">
@@ -129,6 +155,8 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
 </header>
 <script>
 require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerData) {
+    var serverIsLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
+
     var updateBadge = function() {
         var cart = customerData.get('cart')();
         var count = 0;
@@ -142,18 +170,28 @@ require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerDat
 
     var updateProfile = function() {
         var customer = customerData.get('customer')();
-        if (!customer || !customer.firstname) {
-            $('.toyota-user-profile').remove();
-        } else {
-            $('.toyota-user-profile').show();
-            if (customer.fullname && $('.toyota-user-profile .user-name').length) {
-                var caretHtml = '<svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151"><path d="M7 10l5 5 5-5z" /></svg>';
-                $('.toyota-user-profile .user-name').html($('<div>').text(customer.fullname).html() + caretHtml);
+        var hasCustomer = Boolean(customer && (customer.firstname || customer.fullname));
+
+        if (hasCustomer) {
+            $('.toyota-user-profile').css('display', 'flex');
+            if (customer.fullname) {
+                $('.toyota-user-profile .user-name-text').text(customer.fullname);
             }
+        } else if (!serverIsLoggedIn) {
+            $('.toyota-user-profile').hide();
+        } else {
+            $('.toyota-user-profile').css('display', 'flex');
         }
     };
     customerData.get('customer').subscribe(updateProfile);
     updateProfile();
+
+    if (serverIsLoggedIn) {
+        var currentCust = customerData.get('customer')();
+        if (!currentCust || !currentCust.firstname) {
+            customerData.reload(['customer'], true);
+        }
+    }
 
     // Reload cart section to clear stale browser local storage data
     customerData.reload(['cart'], true);
