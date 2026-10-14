@@ -17,9 +17,12 @@ $actionName = $block->getRequest()->getFullActionName();
 
 $customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
 $httpContext = $objectManager->get(\Magento\Framework\App\Http\Context::class);
-$isLoggedIn = (bool)$httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH) || $customerSession->isLoggedIn();
+$isLoggedIn = (bool)$httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH)
+    || $customerSession->isLoggedIn()
+    || (bool)$customerSession->getCustomerId()
+    || (bool)$customerSession->getLoggedAsCustomerAdminId();
 $profileUrl = $isLoggedIn ? $block->getUrl('customer/account') : $block->getUrl('customer/account/login');
-$customerName = ($isLoggedIn && $customerSession->isLoggedIn() && $customerSession->getCustomer())
+$customerName = ($isLoggedIn && $customerSession->getCustomer() && $customerSession->getCustomer()->getName())
     ? $customerSession->getCustomer()->getName()
     : 'Scot Francis';
 if (empty(trim((string)$customerName))) {
@@ -47,7 +50,8 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
             </div>
         </div>
 
-        <a href="<?= $block->escapeUrl($profileUrl) ?>" class="toyota-user-profile" title="<?= $isLoggedIn ? __('User Profile') : __('Sign In') ?>">
+        <?php if ($isLoggedIn): ?>
+        <a href="<?= $block->escapeUrl($profileUrl) ?>" class="toyota-user-profile" title="<?= __('User Profile') ?>">
             <div class="user-avatar">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="#6b7280">
                     <path
@@ -55,21 +59,16 @@ $cartQty = ($quote && $quote->getId()) ? (int)$quote->getItemsQty() : 0;
                 </svg>
             </div>
             <div class="user-info">
-                <?php if ($isLoggedIn): ?>
-                    <div class="user-name">
-                        <?= $block->escapeHtml($customerName) ?>
-                        <svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
-                    </div>
-                    <div class="user-store">Right Toyota</div>
-                <?php else: ?>
-                    <div class="user-name">
-                        Sign In
-                    </div>
-                <?php endif; ?>
+                <div class="user-name">
+                    <?= $block->escapeHtml($customerName) ?>
+                    <svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151">
+                        <path d="M7 10l5 5 5-5z" />
+                    </svg>
+                </div>
+                <div class="user-store">Right Toyota</div>
             </div>
         </a>
+        <?php endif; ?>
     </div>
     <div class="toyota-search-bar-container">
         <form class="search-form" id="search_mini_form" action="<?= $block->getUrl('catalogsearch/result/') ?>" method="get">
@@ -140,6 +139,21 @@ require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerDat
     };
     customerData.get('cart').subscribe(updateBadge);
     updateBadge();
+
+    var updateProfile = function() {
+        var customer = customerData.get('customer')();
+        if (!customer || !customer.firstname) {
+            $('.toyota-user-profile').remove();
+        } else {
+            $('.toyota-user-profile').show();
+            if (customer.fullname && $('.toyota-user-profile .user-name').length) {
+                var caretHtml = '<svg class="dropdown-caret" viewBox="0 0 24 24" width="14" height="14" fill="#374151"><path d="M7 10l5 5 5-5z" /></svg>';
+                $('.toyota-user-profile .user-name').html($('<div>').text(customer.fullname).html() + caretHtml);
+            }
+        }
+    };
+    customerData.get('customer').subscribe(updateProfile);
+    updateProfile();
 
     // Reload cart section to clear stale browser local storage data
     customerData.reload(['cart'], true);

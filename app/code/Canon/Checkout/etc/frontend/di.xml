@@ -3,4 +3,7 @@
     <type name="Magento\Checkout\Controller\Index\Index">
         <plugin name="canon_checkout_skip_empty_redirect" type="Canon\Checkout\Plugin\SkipEmptyCartRedirectPlugin" sortOrder="1" />
     </type>
+    <type name="Magento\Framework\App\FrontControllerInterface">
+        <plugin name="canon_checkout_force_login" type="Canon\Checkout\Plugin\ForceLoginPlugin" sortOrder="-10" />
+    </type>
 </config>
