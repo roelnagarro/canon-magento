@@ -34,7 +34,7 @@ $actionName = $block->getRequest()->getFullActionName();
                     <?= $block->escapeHtml(__('Account Information')) ?>
                 </a>
             </li>
-            <li class="cdg-nav-item <?= (strpos($actionName, 'vault') !== false) ? 'active' : '' ?>">
+            <li class="cdg-nav-item cdg-nav-item-vault <?= (strpos($actionName, 'vault') !== false) ? 'active' : '' ?>">
                 <a href="<?= $block->escapeUrl($block->getUrl('vault/cards/listaction')) ?>">
                     <?= $block->escapeHtml(__('Stored Payment Methods')) ?>
                 </a>

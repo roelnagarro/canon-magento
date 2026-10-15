@@ -54,11 +54,6 @@ $buttonLockManager = $block->getData('button_lock_manager');
                     <button type="submit" class="action login primary btn-login-submit" name="send" id="send2" <?php if ($buttonLockManager?->isDisabled('customer_login_form_submit')): ?> disabled="disabled" <?php endif; ?>>
                         <span>Login</span>
                     </button>
-
-                    <a href="<?= $escaper->escapeUrl($block->getUrl('sso/index/login')) ?>"
-                        class="action btn-sso-login">
-                        <span>SSO - Forgerock</span>
-                    </a>
                 </div>
 
                 <div class="login-links-row">
@@ -80,6 +75,30 @@ $buttonLockManager = $block->getData('button_lock_manager');
                     }
                 }
             }
+        </script>
+        <script>
+            require(['jquery'], function ($) {
+                var setupErrorPlacement = function () {
+                    var v = $('#login-form').data('validator');
+                    if (v && !v._toyotaCustomPlacementAttached) {
+                        v._toyotaCustomPlacementAttached = true;
+                        var origPlacement = v.settings.errorPlacement;
+                        v.settings.errorPlacement = function (error, element) {
+                            var $wrapper = element.closest('.input-icon-wrapper');
+                            if ($wrapper.length) {
+                                $wrapper.after(error);
+                            } else if (origPlacement) {
+                                origPlacement(error, element);
+                            } else {
+                                element.after(error);
+                            }
+                        };
+                    }
+                };
+                setupErrorPlacement();
+                setTimeout(setupErrorPlacement, 250);
+                setTimeout(setupErrorPlacement, 1000);
+            });
         </script>
     </div>
 </div>
