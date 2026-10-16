@@ -68,8 +68,9 @@ if (empty($items)) {
                                            value="<?= $qty ?>"
                                            type="number"
                                            min="1"
+                                           readonly="readonly"
                                            class="input-text qty"
-                                           style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 28px !important; border: none !important; background: transparent !important; text-align: center !important; font-size: 14px !important; font-weight: 700 !important; color: #18181b !important; padding: 0 !important; margin: 0 4px !important; box-shadow: none !important; outline: none !important; display: inline-block !important;" />
+                                           style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 28px !important; border: none !important; background: transparent !important; text-align: center !important; font-size: 14px !important; font-weight: 700 !important; color: #18181b !important; padding: 0 !important; margin: 0 4px !important; box-shadow: none !important; outline: none !important; display: inline-block !important; cursor: default !important; user-select: none !important;" />
                                     <button type="button" class="qty-btn cart-qty-plus" data-cart-item-id="<?= $_item->getId() ?>" aria-label="Increase quantity" style="width: 26px !important; height: 26px !important; min-width: 26px !important; border-radius: 50% !important; border: 1px solid #a1a1aa !important; background: #ffffff !important; color: #3f3f46 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important;">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                     </button>
@@ -86,6 +87,14 @@ if (empty($items)) {
 <script>
 require(['jquery'], function($) {
     $(document).ready(function() {
+        $(document).on('keydown keypress input paste', '.input-text.qty', function(e) {
+            if (e.key === 'Tab') {
+                return true;
+            }
+            e.preventDefault();
+            return false;
+        });
+
         $(document).on('click', '.cart-qty-minus', function(e) {
             e.preventDefault();
             var $qtyInput = $(this).siblings('.input-text.qty');

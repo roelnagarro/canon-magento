@@ -248,5 +248,18 @@ require(['jquery', 'Magento_Customer/js/customer-data'], function($, customerDat
 
     // Reload cart section to clear stale browser local storage data
     customerData.reload(['cart'], true);
+
+    // Lock qty input to prevent keyboard entry - can only be changed by clicking qty-btn
+    $(document).on('keydown keypress input paste', '.input-text.qty, input[name="qty"], input[name^="cart["][name$="[qty]"]', function(e) {
+        if (e.key === 'Tab') {
+            return true;
+        }
+        e.preventDefault();
+        return false;
+    });
+    $(document).on('focus', '.input-text.qty, input[name="qty"], input[name^="cart["][name$="[qty]"]', function() {
+        $(this).prop('readonly', true);
+    });
+    $('.input-text.qty, input[name="qty"], input[name^="cart["][name$="[qty]"]').prop('readonly', true);
 });
 </script>

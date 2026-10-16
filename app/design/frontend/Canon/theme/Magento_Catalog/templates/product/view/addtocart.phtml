@@ -22,6 +22,7 @@
                        value="<?= $block->getProductDefaultQty() * 1 ?>"
                        title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
                        class="input-text qty"
+                       readonly="readonly"
                        data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
                        />
                 <button type="button" class="qty-btn qty-plus" id="qty-plus" aria-label="Increase quantity">
@@ -52,6 +53,14 @@
 <script>
 require(['jquery'], function($) {
     $(document).ready(function() {
+        $(document).on('keydown keypress input paste', '#qty, .input-text.qty', function(e) {
+            if (e.key === 'Tab') {
+                return true;
+            }
+            e.preventDefault();
+            return false;
+        });
+
         $(document).on('click', '#qty-minus', function(e) {
             e.preventDefault();
             var $qty = $('#qty');
