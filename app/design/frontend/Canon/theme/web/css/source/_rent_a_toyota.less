@@ -753,21 +753,30 @@ a.pill-btn:hover:not(.pill-btn-active),
         justify-content: center;
         align-items: center;
         min-height: calc(100vh - 200px);
-        padding: 40px 20px 0 !important;
+        padding: 20px !important;
         background-color: #ffffff;
+        box-sizing: border-box !important;
     }
 
     .columns {
         width: 100%;
         display: flex;
         justify-content: center;
+        align-items: center;
+    }
+
+    .column.main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
     }
 }
 
 .customer-login-wrapper {
     width: 100% !important;
     max-width: 400px !important;
-    margin: 40px auto;
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
@@ -1616,9 +1625,11 @@ a.pill-btn:hover:not(.pill-btn-active),
     }
 }
 
-/* Customer Account Logout Success Page Styles */
+/* Customer Account Logout / Login Success Page Styles */
 .customer-account-logoutsuccess-page,
-.customer-account-logoutsuccess {
+.customer-account-logoutsuccess,
+.customer-account-loginsuccess-page,
+.customer-account-loginsuccess {
     background-color: #ffffff !important;
 
     .toyota-search-bar-container,
@@ -1631,7 +1642,7 @@ a.pill-btn:hover:not(.pill-btn-active),
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        min-height: calc(100vh - 240px) !important;
+        min-height: calc(100vh - 200px) !important;
         padding: 40px 20px !important;
         text-align: center !important;
         box-sizing: border-box !important;
@@ -2641,7 +2652,7 @@ html body.page-layout-1column .toolbar-products .sorter {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 20px !important;
+    padding: 0px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 
@@ -2685,7 +2696,7 @@ html body.page-layout-1column .toolbar-products .sorter {
     .product-image-photo,
     img {
         position: static !important;
-        max-height: 200px !important;
+        max-height: 266px !important;
         max-width: 85% !important;
         width: auto !important;
         height: auto !important;
@@ -2735,7 +2746,7 @@ html body.page-layout-1column .toolbar-products .sorter {
     img,
     .product-image-photo {
         position: static !important;
-        max-height: 200px !important;
+        max-height: 266px !important;
         max-width: 85% !important;
         width: auto !important;
         height: auto !important;
@@ -2749,6 +2760,10 @@ html body.page-layout-1column .toolbar-products .sorter {
         transition: transform 0.3s ease !important;
         mix-blend-mode: multiply !important;
     }
+}
+
+.product-image-photo {
+    max-height: 266px !important;
 }
 
 .product-item:hover .product-image-photo,
